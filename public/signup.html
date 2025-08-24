@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - StudyMate AI</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --primary-solid: #667eea;
+        --secondary: #f8fafc;
+        --accent: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--primary);
+        min-height: 100vh;
+        color: var(--text-primary);
+        padding: 2rem 0;
+      }
+
+      /* Animated background */
+      .bg-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .particle {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+        backdrop-filter: blur(1px);
+      }
+
+      .particle:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        left: 10%;
+        animation-delay: 0s;
+      }
+      .particle:nth-child(2) {
+        width: 40px;
+        height: 40px;
+        left: 80%;
+        animation-delay: 1s;
+      }
+      .particle:nth-child(3) {
+        width: 60px;
+        height: 60px;
+        left: 60%;
+        animation-delay: 2s;
+      }
+      .particle:nth-child(4) {
+        width: 100px;
+        height: 100px;
+        left: 20%;
+        animation-delay: 0.5s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translateY(-30px) rotate(180deg);
+          opacity: 0.6;
+        }
+      }
+
+      .back-btn {
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        color: white;
+        border: 2px solid var(--glass-border);
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 100;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        animation: slideUp 0.8s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+
+      .logo {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: bounce 2s ease-in-out infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .auth-card h1 {
+        color: var(--text-primary);
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: var(--primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .form-steps {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        margin: 0 1rem;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+      }
+
+      .step.active {
+        opacity: 1;
+      }
+
+      .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        font-size: 0.8rem;
+      }
+
+      .step.active .step-number {
+        background: var(--primary-solid);
+        color: white;
+      }
+
+      .step-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .form-section {
+        display: none;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .form-section.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .section-subtitle {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        position: relative;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: block;
+      }
+
+      .form-label.required::after {
+        content: " *";
+        color: var(--error);
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        font-family: inherit;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary-solid);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .form-input:invalid {
+        border-color: var(--error);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+        font-family: inherit;
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: var(--primary-solid);
+      }
+
+      .password-strength {
+        display: flex;
+        gap: 0.3rem;
+        margin-top: 0.5rem;
+        height: 3px;
+      }
+
+      .strength-bar {
+        flex: 1;
+        background: #f0f0f0;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      .strength-bar.weak {
+        background: #f56565;
+      }
+      .strength-bar.medium {
+        background: #ed8936;
+      }
+      .strength-bar.strong {
+        background: #48bb78;
+      }
+      .strength-bar.very-strong {
+        background: #38a169;
+      }
+
+      .strength-text {
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: rgba(102, 126, 234, 0.05);
+        border-radius: 12px;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+      }
+
+      .checkbox {
+        width: 18px;
+        height: 18px;
+        margin-top: 0.1rem;
+        accent-color: var(--primary-solid);
+        cursor: pointer;
+      }
+
+      .checkbox-label {
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        line-height: 1.5;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .form-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .btn {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        font-family: inherit;
+      }
+
+      .btn-primary {
+        background: var(--primary-solid);
+        color: white;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: #5a67d8;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--text-primary);
+        border: 2px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--primary-solid);
+        color: var(--primary-solid);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      .btn.loading {
+        position: relative;
+        color: transparent;
+      }
+
+      .btn.loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 3px solid transparent;
+        border-top: 3px solid currentColor;
+        border-radius: 50%;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      .auth-link {
+        color: var(--primary-solid);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .auth-link:hover {
+        color: #764ba2;
+      }
+
+      .error-message,
+      .success-message {
+        padding: 1rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        display: none;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+      }
+
+      .error-message {
+        background: #fed7d7;
+        color: #c53030;
+        border-left: 4px solid #f56565;
+      }
+
+      .success-message {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left: 4px solid #48bb78;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .shake {
+        animation: shake 0.5s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .auth-card {
+          padding: 2rem 1.5rem;
+          border-radius: 20px;
+        }
+
+        .auth-card h1 {
+          font-size: 2rem;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-steps {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .step {
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <a href="index.html" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      Back to Home
+    </a>
+
+    <div class="container">
+      <div class="auth-card">
+        <div class="header">
+          <div class="logo">📚</div>
+          <h1>Join StudyMate AI</h1>
+          <p class="subtitle">Create your intelligent learning profile</p>
+        </div>
+
+        <div class="form-steps">
+          <div class="step active" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-label">Account</div>
+          </div>
+          <div class="step" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-label">Profile</div>
+          </div>
+          <div class="step" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-label">Preferences</div>
+          </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="signupForm">
+          <!-- Step 1: Account Information -->
+          <div class="form-section active" data-section="1">
+            <div class="section-title">
+              <i class="fas fa-user-circle"></i>
+              Account Information
+            </div>
+            <div class="section-subtitle">
+              Let's start with your basic account details
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required" for="firstName"
+                  >First Name</label
+                >
+                <input
+                  type="text"
+                  id="firstName"
+                  class="form-input"
+                  placeholder="Enter your first name"
+                  required
+                  autocomplete="given-name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required" for="lastName"
+                  >Last Name</label
+                >
+                <input
+                  type="text"
+                  id="lastName"
+                  class="form-input"
+                  placeholder="Enter your last name"
+                  required
+                  autocomplete="family-name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required" for="signupEmail"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  id="signupEmail"
+                  class="form-input"
+                  placeholder="Enter your email"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  class="form-input"
+                  placeholder="Enter your phone number"
+                  autocomplete="tel"
+                />
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required" for="signupPassword"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  id="signupPassword"
+                  class="form-input"
+                  placeholder="Create a strong password"
+                  required
+                  autocomplete="new-password"
+                />
+                <div class="password-strength" id="passwordStrength">
+                  <div class="strength-bar"></div>
+                  <div class="strength-bar"></div>
+                  <div class="strength-bar"></div>
+                  <div class="strength-bar"></div>
+                </div>
+                <div class="strength-text" id="strengthText">
+                  Enter a strong password
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required" for="confirmPassword"
+                  >Confirm Password</label
+                >
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  class="form-input"
+                  placeholder="Confirm your password"
+                  required
+                  autocomplete="new-password"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Personal Information -->
+          <div class="form-section" data-section="2">
+            <div class="section-title">
+              <i class="fas fa-id-card"></i>
+              Personal Information
+            </div>
+            <div class="section-subtitle">
+              Tell us more about yourself for a personalized experience
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="dateOfBirth"
+                  >Date of Birth</label
+                >
+                <input type="date" id="dateOfBirth" class="form-input" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="grade">Grade/Level</label>
+                <select id="grade" class="form-select">
+                  <option value="">Select your grade</option>
+                  <option value="9">9th Grade</option>
+                  <option value="10">10th Grade</option>
+                  <option value="11">11th Grade</option>
+                  <option value="12">12th Grade</option>
+                  <option value="college">College/University</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="bio">Bio</label>
+              <textarea
+                id="bio"
+                class="form-input form-textarea"
+                placeholder="Tell us about yourself, your academic goals, and interests..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Step 3: Study Preferences -->
+          <div class="form-section" data-section="3">
+            <div class="section-title">
+              <i class="fas fa-cog"></i>
+              Study Preferences
+            </div>
+            <div class="section-subtitle">
+              Customize your learning experience
+            </div>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="emailNotifications" class="checkbox" />
+              <label for="emailNotifications" class="checkbox-label">
+                <strong>Email Notifications</strong><br />
+                Receive study reminders and progress updates via email
+              </label>
+            </div>
+
+            <div class="checkbox-group">
+              <input
+                type="checkbox"
+                id="pushNotifications"
+                class="checkbox"
+                checked
+              />
+              <label for="pushNotifications" class="checkbox-label">
+                <strong>Push Notifications</strong><br />
+                Get real-time notifications for study sessions and deadlines
+              </label>
+            </div>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="darkMode" class="checkbox" />
+              <label for="darkMode" class="checkbox-label">
+                <strong>Dark Mode</strong><br />
+                Use dark theme for better studying in low light
+              </label>
+            </div>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="autoSave" class="checkbox" checked />
+              <label for="autoSave" class="checkbox-label">
+                <strong>Auto-save Notes</strong><br />
+                Automatically save your notes and study materials
+              </label>
+            </div>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="analytics" class="checkbox" checked />
+              <label for="analytics" class="checkbox-label">
+                <strong>Advanced Analytics</strong><br />
+                Enable detailed study pattern analysis and insights
+              </label>
+            </div>
+
+            <div class="checkbox-group">
+              <input
+                type="checkbox"
+                id="studyReminders"
+                class="checkbox"
+                checked
+              />
+              <label for="studyReminders" class="checkbox-label">
+                <strong>Study Reminders</strong><br />
+                Get reminded about scheduled study sessions and breaks
+              </label>
+            </div>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="newsletter" class="checkbox" />
+              <label for="newsletter" class="checkbox-label">
+                <strong>Newsletter Subscription</strong><br />
+                Send me study tips and AI learning insights via email
+              </label>
+            </div>
+
+            <div class="checkbox-group">
+              <input
+                type="checkbox"
+                id="agreeTerms"
+                class="checkbox"
+                required
+              />
+              <label for="agreeTerms" class="checkbox-label">
+                <strong>Terms & Conditions *</strong><br />
+                I agree to the
+                <a href="#" class="auth-link">Terms of Service</a> and
+                <a href="#" class="auth-link">Privacy Policy</a>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-navigation">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="prevBtn"
+              onclick="changeStep(-1)"
+            >
+              <i class="fas fa-arrow-left"></i>
+              Previous
+            </button>
+            <div style="display: flex; gap: 1rem">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="nextBtn"
+                onclick="changeStep(1)"
+              >
+                Next
+                <i class="fas fa-arrow-right"></i>
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                id="signupBtn"
+                style="display: none"
+              >
+                Create Account
+                <i class="fas fa-check"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 2rem">
+          <p>
+            Already have an account?
+            <a href="login.html" class="auth-link">Sign In</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { auth, db } from "./js/firebase.js";
+      import {
+        createUserWithEmailAndPassword,
+        updateProfile,
+      } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+      import {
+        doc,
+        setDoc,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+      let currentStep = 1;
+      let passwordStrengthScore = 0;
+
+      // Initialize when DOM loads
+      document.addEventListener("DOMContentLoaded", function () {
+        setupPasswordStrength();
+        setupFormValidation();
+        updateStepDisplay();
+      });
+
+      function setupPasswordStrength() {
+        const passwordField = document.getElementById("signupPassword");
+        const strengthBars = document.querySelectorAll(".strength-bar");
+        const strengthText = document.getElementById("strengthText");
+
+        passwordField.addEventListener("input", function () {
+          const password = this.value;
+
+          if (password.length === 0) {
+            passwordStrengthScore = 0;
+            strengthBars.forEach((bar) => (bar.className = "strength-bar"));
+            strengthText.textContent = "Enter a strong password";
+            strengthText.style.color = "#6b7280";
+            return;
+          }
+
+          let score = 0;
+          if (password.length >= 8) score++;
+          if (/[a-z]/.test(password)) score++;
+          if (/[A-Z]/.test(password)) score++;
+          if (/\d/.test(password)) score++;
+          if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+
+          passwordStrengthScore = score;
+
+          strengthBars.forEach((bar, index) => {
+            bar.className = "strength-bar";
+            if (index < score) {
+              if (score <= 2) bar.classList.add("weak");
+              else if (score <= 3) bar.classList.add("medium");
+              else if (score <= 4) bar.classList.add("strong");
+              else bar.classList.add("very-strong");
+            }
+          });
+
+          if (score <= 2) {
+            strengthText.textContent = "Weak password";
+            strengthText.style.color = "#f56565";
+          } else if (score <= 3) {
+            strengthText.textContent = "Good password";
+            strengthText.style.color = "#ed8936";
+          } else if (score <= 4) {
+            strengthText.textContent = "Strong password";
+            strengthText.style.color = "#48bb78";
+          } else {
+            strengthText.textContent = "Very strong password";
+            strengthText.style.color = "#38a169";
+          }
+        });
+      }
+
+      function setupFormValidation() {
+        const form = document.getElementById("signupForm");
+        form.addEventListener("submit", handleSignup);
+
+        // Real-time validation
+        const inputs = form.querySelectorAll("input[required]");
+        inputs.forEach((input) => {
+          input.addEventListener("blur", validateField);
+          input.addEventListener("input", validateField);
+        });
+      }
+
+      function validateField(e) {
+        const field = e.target;
+        const isValid = field.checkValidity() && field.value.trim();
+
+        if (field.type === "email") {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          const emailValid = emailRegex.test(field.value);
+          field.style.borderColor = emailValid ? "#10b981" : "#ef4444";
+        } else if (field.id === "confirmPassword") {
+          const password = document.getElementById("signupPassword").value;
+          const match = field.value === password && field.value.length > 0;
+          field.style.borderColor = match ? "#10b981" : "#ef4444";
+        } else {
+          field.style.borderColor = isValid ? "#10b981" : "#ef4444";
+        }
+
+        setTimeout(() => {
+          if (!field.matches(":focus")) {
+            field.style.borderColor = "#e5e7eb";
+          }
+        }, 2000);
+      }
+
+      window.changeStep = function (direction) {
+        if (direction > 0 && currentStep < 3) {
+          if (validateCurrentStep()) {
+            currentStep++;
+            updateStepDisplay();
+          }
+        } else if (direction < 0 && currentStep > 1) {
+          currentStep--;
+          updateStepDisplay();
+        }
+      };
+
+      function validateCurrentStep() {
+        const currentSection = document.querySelector(
+          `[data-section="${currentStep}"]`
+        );
+        const requiredFields = currentSection.querySelectorAll(
+          "input[required], select[required]"
+        );
+        let isValid = true;
+
+        requiredFields.forEach((field) => {
+          if (!field.value.trim()) {
+            field.style.borderColor = "#ef4444";
+            field.focus();
+            showError("Please fill in all required fields");
+            isValid = false;
+          }
+        });
+
+        if (currentStep === 1) {
+          const password = document.getElementById("signupPassword").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          if (password !== confirmPassword) {
+            showError("Passwords do not match");
+            return false;
+          }
+
+          if (passwordStrengthScore < 3) {
+            showError("Please choose a stronger password");
+            return false;
+          }
+        }
+
+        if (currentStep === 3) {
+          const termsCheckbox = document.getElementById("agreeTerms");
+          if (!termsCheckbox.checked) {
+            showError("You must agree to the Terms of Service");
+            return false;
+          }
+        }
+
+        return isValid;
+      }
+
+      function updateStepDisplay() {
+        // Update step indicators
+        document.querySelectorAll(".step").forEach((step, index) => {
+          if (index + 1 <= currentStep) {
+            step.classList.add("active");
+          } else {
+            step.classList.remove("active");
+          }
+        });
+
+        // Update sections
+        document.querySelectorAll(".form-section").forEach((section) => {
+          section.classList.remove("active");
+        });
+        document
+          .querySelector(`[data-section="${currentStep}"]`)
+          .classList.add("active");
+
+        // Update buttons
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const signupBtn = document.getElementById("signupBtn");
+
+        prevBtn.style.display = currentStep > 1 ? "inline-flex" : "none";
+
+        if (currentStep < 3) {
+          nextBtn.style.display = "inline-flex";
+          signupBtn.style.display = "none";
+        } else {
+          nextBtn.style.display = "none";
+          signupBtn.style.display = "inline-flex";
+        }
+      }
+
+      async function handleSignup(e) {
+        e.preventDefault();
+
+        if (!validateCurrentStep()) return;
+
+        const signupBtn = document.getElementById("signupBtn");
+        signupBtn.classList.add("loading");
+        signupBtn.disabled = true;
+
+        try {
+          // Collect all form data
+          const formData = {
+            firstName: document.getElementById("firstName").value.trim(),
+            lastName: document.getElementById("lastName").value.trim(),
+            email: document.getElementById("signupEmail").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            dateOfBirth: document.getElementById("dateOfBirth").value,
+            grade: document.getElementById("grade").value,
+            bio: document.getElementById("bio").value.trim(),
+            preferences: {
+              emailNotifications:
+                document.getElementById("emailNotifications").checked,
+              pushNotifications:
+                document.getElementById("pushNotifications").checked,
+              darkMode: document.getElementById("darkMode").checked,
+              autoSave: document.getElementById("autoSave").checked,
+              analytics: document.getElementById("analytics").checked,
+              studyReminders: document.getElementById("studyReminders").checked,
+              newsletter: document.getElementById("newsletter").checked,
+            },
+          };
+
+          const password = document.getElementById("signupPassword").value;
+          const fullName = `${formData.firstName} ${formData.lastName}`;
+
+          console.log("🚀 Creating user account...");
+
+          // Create Firebase Auth user
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            formData.email,
+            password
+          );
+          const user = userCredential.user;
+
+          // Update user profile with display name
+          await updateProfile(user, {
+            displayName: fullName,
+          });
+
+          console.log("✅ Auth user created:", user.uid);
+
+          // Create comprehensive user document in Firestore
+          const userData = {
+            // Basic Info
+            uid: user.uid,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            name: fullName, // For compatibility
+            email: formData.email,
+            phone: formData.phone,
+            dateOfBirth: formData.dateOfBirth,
+            grade: formData.grade,
+            bio: formData.bio,
+
+            // Timestamps
+            createdAt: serverTimestamp(),
+            lastLogin: serverTimestamp(),
+
+            // Profile Status
+            profileComplete: true,
+            emailVerified: user.emailVerified,
+
+            // Study Preferences (matching profile.html exactly)
+            preferences: formData.preferences,
+
+            // Study Statistics (initialize with default values)
+            studyStats: {
+              studyStreak: 0,
+              totalHours: 0,
+              completedQuizzes: 0,
+              averageScore: 0,
+              lastStudyDate: null,
+              totalSessions: 0,
+              streakDays: 0,
+            },
+
+            // Additional data structures
+            subjects: [],
+            goals: [],
+            achievements: [],
+            activities: [],
+            notes: [],
+
+            // System
+            version: "1.0",
+            theme: formData.preferences.darkMode ? "dark" : "light",
+          };
+
+          await setDoc(doc(db, "users", user.uid), userData);
+          console.log("✅ User profile saved to Firestore");
+
+          // Success feedback
+          showSuccess(
+            "🎉 Account created successfully! Redirecting to login..."
+          );
+
+          // Animate success
+          const authCard = document.querySelector(".auth-card");
+          authCard.style.transform = "scale(1.02)";
+          authCard.style.transition = "transform 0.3s ease";
+
+          // Clear form and redirect
+          setTimeout(() => {
+            document.getElementById("signupForm").reset();
+            window.location.href = "login.html";
+          }, 2500);
+        } catch (error) {
+          console.error("❌ Signup error:", error);
+
+          let errorMessage = "Account creation failed";
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              errorMessage = "An account with this email already exists";
+              break;
+            case "auth/invalid-email":
+              errorMessage = "Please enter a valid email address";
+              break;
+            case "auth/weak-password":
+              errorMessage = "Password is too weak";
+              break;
+            case "auth/network-request-failed":
+              errorMessage = "Network error. Please check your connection";
+              break;
+            default:
+              errorMessage = error.message;
+          }
+
+          showError(errorMessage);
+
+          // Shake animation on error
+          const authCard = document.querySelector(".auth-card");
+          authCard.classList.add("shake");
+          setTimeout(() => authCard.classList.remove("shake"), 500);
+        } finally {
+          signupBtn.classList.remove("loading");
+          signupBtn.disabled = false;
+        }
+      }
+
+      function showError(message) {
+        const errorDiv = document.getElementById("errorMessage");
+        const successDiv = document.getElementById("successMessage");
+
+        if (successDiv) successDiv.style.display = "none";
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+        errorDiv.style.display = "block";
+
+        errorDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        setTimeout(() => {
+          errorDiv.style.display = "none";
+        }, 5000);
+      }
+
+      function showSuccess(message) {
+        const errorDiv = document.getElementById("errorMessage");
+        const successDiv = document.getElementById("successMessage");
+
+        if (errorDiv) errorDiv.style.display = "none";
+        successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        successDiv.style.display = "block";
+
+        successDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && e.ctrlKey) {
+          if (currentStep < 3) {
+            changeStep(1);
+          } else {
+            document
+              .getElementById("signupForm")
+              .dispatchEvent(new Event("submit"));
+          }
+        }
+      });
+
+      // Auto-advance on valid step completion
+      document.querySelectorAll("input").forEach((input) => {
+        input.addEventListener("blur", () => {
+          const currentSection = document.querySelector(
+            `[data-section="${currentStep}"]`
+          );
+          const requiredFields =
+            currentSection.querySelectorAll("input[required]");
+          const allFilled = Array.from(requiredFields).every((field) =>
+            field.value.trim()
+          );
+
+          if (allFilled && currentStep === 1) {
+            const password = document.getElementById("signupPassword").value;
+            const confirmPassword =
+              document.getElementById("confirmPassword").value;
+            if (password === confirmPassword && passwordStrengthScore >= 3) {
+              // Auto-advance after a brief delay
+              setTimeout(() => {
+                if (currentStep === 1) changeStep(1);
+              }, 1000);
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

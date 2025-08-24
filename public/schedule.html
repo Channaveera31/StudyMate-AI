@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudyMate AI - Schedule</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 20px 30px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .header h1 {
+        color: white;
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: white;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 16px;
+        overflow: hidden;
+      }
+
+      .user-avatar img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .auth-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+
+      .auth-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      .card h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: white;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+      }
+
+      .btn-secondary:hover {
+        box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+      }
+
+      .schedule-list {
+        display: grid;
+        gap: 15px;
+      }
+
+      .schedule-item {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        border-left: 5px solid #667eea;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+      }
+
+      .schedule-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      .schedule-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .schedule-title {
+        font-weight: 600;
+        font-size: 18px;
+        color: #333;
+      }
+
+      .schedule-date {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .schedule-hours {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #f0f0f0;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: width 0.3s ease;
+      }
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .modal.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 90%;
+        max-height: 90%;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        transform: scale(0.9);
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .modal.active .modal-content {
+        transform: scale(1);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+
+      .close-btn:hover {
+        background: #f0f0f0;
+        color: #333;
+      }
+
+      .task-day {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9ff;
+        border-radius: 15px;
+        border-left: 4px solid #667eea;
+      }
+
+      .day-header {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+
+      .task-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .task-item:last-child {
+        border-bottom: none;
+      }
+
+      .task-checkbox {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #667eea;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .task-checkbox.checked {
+        background: #667eea;
+        color: white;
+      }
+
+      .task-text {
+        flex: 1;
+        transition: all 0.3s ease;
+      }
+
+      .task-text.completed {
+        text-decoration: line-through;
+        opacity: 0.6;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+      }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-left: 4px solid #4caf50;
+        transform: translateX(400px);
+        transition: all 0.3s ease;
+        z-index: 1001;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+
+      .notification.error {
+        border-left-color: #f44336;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-radius: 50%;
+        border-top-color: #667eea;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Registration Modal Styles */
+      .registration-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(15px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .registration-modal.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .registration-form {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        transform: scale(0.9);
+        transition: all 0.3s ease;
+      }
+
+      .registration-modal.active .registration-form {
+        transform: scale(1);
+      }
+
+      .registration-form h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+        font-size: 24px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      @media (max-width: 600px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <a href="dashboard.html" class="back-btn">
+          <span>←</span>
+          Back
+        </a>
+        <h1>📚 Study Schedule</h1>
+        <div class="user-info">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span id="userName">Loading...</span>
+          <button id="authBtn" class="auth-btn">Register</button>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <div class="card">
+          <h2>➕ Add New Subject</h2>
+          <form id="scheduleForm">
+            <div class="form-group">
+              <label for="subjectInput">Subject/Exam Name</label>
+              <input
+                type="text"
+                id="subjectInput"
+                class="form-control"
+                placeholder="e.g., Physics, Mathematics"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="examDate">Exam Date</label>
+              <input type="date" id="examDate" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="dailyHours">Daily Study Hours</label>
+              <input
+                type="number"
+                id="dailyHours"
+                class="form-control"
+                min="1"
+                max="12"
+                placeholder="4"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="difficulty">Difficulty Level</label>
+              <select id="difficulty" class="form-control">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <button type="submit" class="btn">
+              <span id="addBtnText">Add Subject</span>
+              <div
+                id="addBtnLoader"
+                class="loading"
+                style="display: none"
+              ></div>
+            </button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 20px;
+            "
+          >
+            <h2>📖 Your Schedules</h2>
+            <div style="display: flex; gap: 10px">
+              <button class="btn btn-secondary" id="generateAllBtn">
+                ⚡ AI Plan All
+              </button>
+              <button class="btn" id="exportAllBtn">📄 Export PDF</button>
+            </div>
+          </div>
+          <div id="scheduleList" class="schedule-list">
+            <div class="empty-state">
+              <div class="empty-icon">📚</div>
+              <h3>No subjects added yet</h3>
+              <p>
+                Add your first subject to get started with AI-powered study
+                planning!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="totalSubjects">0</div>
+          <div class="stat-label">Total Subjects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalHours">0</div>
+          <div class="stat-label">Daily Hours</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="completedTasks">0</div>
+          <div class="stat-label">Completed Tasks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="upcomingExams">0</div>
+          <div class="stat-label">Upcoming Exams</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="registration-modal">
+      <div class="registration-form">
+        <h2>👋 Welcome to StudyMate AI</h2>
+        <form id="userRegistrationForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                class="form-control"
+                placeholder="John"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                class="form-control"
+                placeholder="Doe"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              placeholder="john.doe@example.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="grade">Grade/Class</label>
+            <select id="grade" class="form-control">
+              <option value="10th">10th Grade</option>
+              <option value="11th">11th Grade</option>
+              <option value="12th">12th Grade</option>
+              <option value="undergraduate">Undergraduate</option>
+              <option value="graduate">Graduate</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number (Optional)</label>
+            <input
+              type="tel"
+              id="phone"
+              class="form-control"
+              placeholder="+1 234 567 8900"
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn"
+            style="width: 100%; margin-top: 20px"
+          >
+            <span id="regBtnText">Get Started</span>
+            <div id="regBtnLoader" class="loading" style="display: none"></div>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Study Plan Modal -->
+    <div id="planModal" class="modal">
+      <div
+        class="modal-content"
+        style="position: relative; min-width: 600px; max-width: 800px"
+      >
+        <button class="close-btn" id="closePlanModal">×</button>
+        <h2 id="planTitle">📊 Study Plan</h2>
+        <div style="display: flex; gap: 15px; margin: 20px 0">
+          <button class="btn" id="downloadPlanBtn">📄 Download PDF</button>
+          <div class="progress-bar" style="flex: 1">
+            <div
+              class="progress-fill"
+              id="planProgress"
+              style="width: 0%"
+            ></div>
+          </div>
+          <span id="progressText">0% Complete</span>
+        </div>
+        <div id="planContent"></div>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+      <div id="notificationText">Success!</div>
+    </div>
+
+    <script type="module">
+      class StudyScheduleApp {
+        constructor() {
+          this.schedules = [];
+          this.currentUser = null;
+
+          this.initializeApp();
+          this.bindEvents();
+          this.checkUserRegistration();
+        }
+
+        initializeApp() {
+          // Set minimum date to today
+          const today = new Date().toISOString().split("T")[0];
+          document.getElementById("examDate").min = today;
+        }
+
+        checkUserRegistration() {
+          // Check if user is already registered
+          const userData = this.getUserData();
+          if (userData) {
+            this.currentUser = userData;
+            this.updateUserUI();
+            this.loadUserSchedules();
+          } else {
+            // Show registration modal for new users
+            this.showRegistrationModal();
+          }
+        }
+
+        showRegistrationModal() {
+          document.getElementById("registrationModal").classList.add("active");
+        }
+
+        hideRegistrationModal() {
+          document
+            .getElementById("registrationModal")
+            .classList.remove("active");
+        }
+
+        bindEvents() {
+          // Registration form submission
+          document
+            .getElementById("userRegistrationForm")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              this.registerUser();
+            });
+
+          // Schedule form submission
+          document
+            .getElementById("scheduleForm")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              this.addSchedule();
+            });
+
+          // Action buttons
+          document
+            .getElementById("generateAllBtn")
+            .addEventListener("click", () => this.generateAllPlans());
+          document
+            .getElementById("exportAllBtn")
+            .addEventListener("click", () => this.exportAllToPDF());
+
+          // Modal events
+          document
+            .getElementById("closePlanModal")
+            .addEventListener("click", () => this.closePlanModal());
+          document
+            .getElementById("planModal")
+            .addEventListener("click", (e) => {
+              if (e.target.id === "planModal") this.closePlanModal();
+            });
+          document
+            .getElementById("downloadPlanBtn")
+            .addEventListener("click", () => this.downloadCurrentPlan());
+
+          // Auth button
+          document.getElementById("authBtn").addEventListener("click", () => {
+            if (this.currentUser) {
+              this.changeUser();
+            } else {
+              this.showRegistrationModal();
+            }
+          });
+        }
+
+        async registerUser() {
+          const firstName = document.getElementById("firstName").value.trim();
+          const lastName = document.getElementById("lastName").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const grade = document.getElementById("grade").value;
+          const phone = document.getElementById("phone").value.trim();
+
+          if (!firstName || !lastName || !email) {
+            this.showNotification(
+              "Please fill in all required fields",
+              "error"
+            );
+            return;
+          }
+
+          this.showRegLoading(true);
+
+          try {
+            const userData = {
+              firstName,
+              lastName,
+              email,
+              grade,
+              phone,
+              fullName: `${firstName} ${lastName}`,
+              registeredAt: new Date().toISOString(),
+              userId: Date.now().toString(), // Simple ID generation
+            };
+
+            // Store user data in memory (in a real app, you'd store this in your backend/database)
+            this.saveUserData(userData);
+            this.currentUser = userData;
+
+            this.hideRegistrationModal();
+            this.updateUserUI();
+            this.showNotification(`Welcome ${userData.fullName}! 🎉`);
+          } catch (error) {
+            console.error("Registration error:", error);
+            this.showNotification(
+              "Registration failed. Please try again.",
+              "error"
+            );
+          } finally {
+            this.showRegLoading(false);
+          }
+        }
+
+        saveUserData(userData) {
+          // Store in memory for this session
+          window.currentUserData = userData;
+
+          // Also store in localStorage for persistence
+          localStorage.setItem("studyMateUser", JSON.stringify(userData));
+        }
+
+        getUserData() {
+          // Try to get from memory first, then localStorage
+          return (
+            window.currentUserData ||
+            JSON.parse(localStorage.getItem("studyMateUser") || "null")
+          );
+        }
+
+        updateUserUI() {
+          const userName = document.getElementById("userName");
+          const userAvatar = document.getElementById("userAvatar");
+          const authBtn = document.getElementById("authBtn");
+
+          if (this.currentUser) {
+            userName.textContent = this.currentUser.fullName;
+
+            // Create avatar with initials
+            const initials =
+              `${this.currentUser.firstName[0]}${this.currentUser.lastName[0]}`.toUpperCase();
+            userAvatar.textContent = initials;
+
+            authBtn.textContent = "Change User";
+          } else {
+            userName.textContent = "Not Registered";
+            userAvatar.textContent = "?";
+            authBtn.textContent = "Register";
+          }
+        }
+
+        changeUser() {
+          if (
+            confirm(
+              "Do you want to register a new user? This will clear current data."
+            )
+          ) {
+            // Clear current user data
+            this.currentUser = null;
+            window.currentUserData = null;
+            localStorage.removeItem("studyMateUser");
+            localStorage.removeItem("userSchedules");
+
+            // Clear schedules
+            this.schedules = [];
+            this.updateUI();
+
+            // Show registration modal
+            this.showRegistrationModal();
+            this.updateUserUI();
+          }
+        }
+
+        async addSchedule() {
+          if (!this.currentUser) {
+            this.showNotification("Please register first", "error");
+            return;
+          }
+
+          const subject = document.getElementById("subjectInput").value.trim();
+          const examDate = document.getElementById("examDate").value;
+          const dailyHours = parseInt(
+            document.getElementById("dailyHours").value
+          );
+          const difficulty = document.getElementById("difficulty").value;
+
+          if (!subject || !examDate || !dailyHours) {
+            this.showNotification("Please fill in all fields", "error");
+            return;
+          }
+
+          const examDateTime = new Date(examDate);
+          const today = new Date();
+          const daysLeft = Math.ceil(
+            (examDateTime - today) / (1000 * 60 * 60 * 24)
+          );
+
+          if (daysLeft < 1) {
+            this.showNotification("Exam date must be in the future", "error");
+            return;
+          }
+
+          this.showLoading(true);
+
+          try {
+            const scheduleData = {
+              id: Date.now().toString(),
+              userId: this.currentUser.userId,
+              subject,
+              examDate,
+              dailyHours,
+              difficulty,
+              daysLeft,
+              plan: null,
+              progress: 0,
+              completedTasks: [],
+              createdAt: new Date().toISOString(),
+            };
+
+            this.schedules.push(scheduleData);
+            this.saveUserSchedules();
+            this.updateUI();
+
+            // Clear form
+            document.getElementById("scheduleForm").reset();
+            this.showNotification(`${subject} added successfully!`);
+          } catch (error) {
+            console.error("Error adding schedule:", error);
+            this.showNotification("Failed to add schedule", "error");
+          } finally {
+            this.showLoading(false);
+          }
+        }
+
+        saveUserSchedules() {
+          localStorage.setItem("userSchedules", JSON.stringify(this.schedules));
+        }
+
+        loadUserSchedules() {
+          const savedSchedules = localStorage.getItem("userSchedules");
+          if (savedSchedules) {
+            this.schedules = JSON.parse(savedSchedules);
+            this.updateUI();
+          }
+        }
+
+        async generatePlan(scheduleId) {
+          const schedule = this.schedules.find((s) => s.id === scheduleId);
+          if (!schedule) return;
+
+          try {
+            const plan = this.createAIPlan(schedule);
+            schedule.plan = plan;
+            this.saveUserSchedules();
+            this.updateUI();
+
+            this.showNotification(`AI plan generated for ${schedule.subject}!`);
+          } catch (error) {
+            console.error("Error generating plan:", error);
+            this.showNotification("Failed to generate plan", "error");
+          }
+        }
+
+        createAIPlan(schedule) {
+          const topics = this.getTopicsForSubject(schedule.subject);
+          const dailyPlan = [];
+          const totalDays = schedule.daysLeft;
+          const topicsPerDay = Math.ceil(topics.length / totalDays);
+
+          for (let day = 1; day <= totalDays; day++) {
+            const date = new Date();
+            date.setDate(date.getDate() + day - 1);
+
+            const dayTopics = topics.slice(
+              (day - 1) * topicsPerDay,
+              day * topicsPerDay
+            );
+            const tasks = [];
+            const hoursPerTopic =
+              schedule.dailyHours / Math.max(dayTopics.length, 1);
+
+            dayTopics.forEach((topic) => {
+              tasks.push({
+                id: `${schedule.id}-${day}-${topic}`,
+                text: `Study ${topic} (${hoursPerTopic.toFixed(1)}h)`,
+                completed: false,
+                type: "study",
+              });
+
+              if (day % 3 === 0) {
+                tasks.push({
+                  id: `${schedule.id}-${day}-practice-${topic}`,
+                  text: `Practice problems: ${topic}`,
+                  completed: false,
+                  type: "practice",
+                });
+              }
+            });
+
+            if (day === totalDays) {
+              tasks.push({
+                id: `${schedule.id}-${day}-revision`,
+                text: "Final revision and mock test",
+                completed: false,
+                type: "revision",
+              });
+            }
+
+            dailyPlan.push({
+              day,
+              date: date.toISOString().split("T")[0],
+              tasks,
+            });
+          }
+
+          return dailyPlan;
+        }
+
+        getTopicsForSubject(subject) {
+          const topicDatabase = {
+            physics: [
+              "Mechanics",
+              "Thermodynamics",
+              "Electromagnetism",
+              "Optics",
+              "Modern Physics",
+              "Waves",
+              "Quantum Physics",
+            ],
+            mathematics: [
+              "Algebra",
+              "Calculus",
+              "Geometry",
+              "Trigonometry",
+              "Statistics",
+              "Probability",
+              "Linear Algebra",
+            ],
+            chemistry: [
+              "Organic Chemistry",
+              "Inorganic Chemistry",
+              "Physical Chemistry",
+              "Biochemistry",
+              "Analytical Chemistry",
+            ],
+            biology: [
+              "Cell Biology",
+              "Genetics",
+              "Evolution",
+              "Ecology",
+              "Human Physiology",
+              "Molecular Biology",
+            ],
+            "computer science": [
+              "Data Structures",
+              "Algorithms",
+              "Database Systems",
+              "Operating Systems",
+              "Networks",
+              "Programming",
+            ],
+            english: [
+              "Literature",
+              "Grammar",
+              "Writing Skills",
+              "Poetry",
+              "Drama",
+              "Essays",
+            ],
+            history: [
+              "Ancient History",
+              "Medieval History",
+              "Modern History",
+              "World Wars",
+              "Cultural History",
+            ],
+          };
+
+          const key = subject.toLowerCase();
+          return (
+            topicDatabase[key] || [
+              "Introduction",
+              "Fundamentals",
+              "Advanced Topics",
+              "Applications",
+              "Review",
+            ]
+          );
+        }
+
+        async generateAllPlans() {
+          const unplanned = this.schedules.filter((s) => !s.plan);
+          if (unplanned.length === 0) {
+            this.showNotification("All subjects already have plans!");
+            return;
+          }
+
+          for (let schedule of unplanned) {
+            await this.generatePlan(schedule.id);
+            await new Promise((resolve) => setTimeout(resolve, 300));
+          }
+        }
+
+        showPlan(scheduleId) {
+          const schedule = this.schedules.find((s) => s.id === scheduleId);
+          if (!schedule || !schedule.plan) {
+            this.showNotification(
+              "No plan available. Generate one first!",
+              "error"
+            );
+            return;
+          }
+
+          document.getElementById(
+            "planTitle"
+          ).textContent = `📊 ${schedule.subject} Study Plan`;
+
+          const progress = this.calculateProgress(schedule);
+          document.getElementById("planProgress").style.width = `${progress}%`;
+          document.getElementById(
+            "progressText"
+          ).textContent = `${progress}% Complete`;
+
+          const planContent = document.getElementById("planContent");
+          planContent.innerHTML = "";
+
+          schedule.plan.forEach((day) => {
+            const dayElement = document.createElement("div");
+            dayElement.className = "task-day";
+
+            const dayHeader = document.createElement("div");
+            dayHeader.className = "day-header";
+            dayHeader.textContent = `Day ${day.day} - ${new Date(
+              day.date
+            ).toLocaleDateString()}`;
+            dayElement.appendChild(dayHeader);
+
+            day.tasks.forEach((task) => {
+              const taskElement = document.createElement("div");
+              taskElement.className = "task-item";
+
+              const checkbox = document.createElement("div");
+              checkbox.className = `task-checkbox ${
+                task.completed ? "checked" : ""
+              }`;
+              checkbox.innerHTML = task.completed ? "✓" : "";
+              checkbox.addEventListener("click", () => {
+                this.toggleTask(scheduleId, task.id);
+              });
+
+              const taskText = document.createElement("div");
+              taskText.className = `task-text ${
+                task.completed ? "completed" : ""
+              }`;
+              taskText.textContent = task.text;
+
+              taskElement.appendChild(checkbox);
+              taskElement.appendChild(taskText);
+              dayElement.appendChild(taskElement);
+            });
+
+            planContent.appendChild(dayElement);
+          });
+
+          document.getElementById("planModal").classList.add("active");
+        }
+
+        toggleTask(scheduleId, taskId) {
+          const schedule = this.schedules.find((s) => s.id === scheduleId);
+          if (!schedule || !schedule.plan) return;
+
+          let taskFound = false;
+          for (let day of schedule.plan) {
+            const task = day.tasks.find((t) => t.id === taskId);
+            if (task) {
+              task.completed = !task.completed;
+              taskFound = true;
+              break;
+            }
+          }
+
+          if (taskFound) {
+            this.saveUserSchedules();
+            // Refresh the plan modal
+            this.showPlan(scheduleId);
+          }
+        }
+
+        calculateProgress(schedule) {
+          if (!schedule.plan) return 0;
+
+          let totalTasks = 0;
+          let completedTasks = 0;
+
+          schedule.plan.forEach((day) => {
+            totalTasks += day.tasks.length;
+            completedTasks += day.tasks.filter((t) => t.completed).length;
+          });
+
+          return totalTasks > 0
+            ? Math.round((completedTasks / totalTasks) * 100)
+            : 0;
+        }
+
+        deleteSchedule(scheduleId) {
+          if (confirm("Are you sure you want to delete this schedule?")) {
+            this.schedules = this.schedules.filter((s) => s.id !== scheduleId);
+            this.saveUserSchedules();
+            this.updateUI();
+            this.showNotification("Schedule deleted successfully!");
+          }
+        }
+
+        closePlanModal() {
+          document.getElementById("planModal").classList.remove("active");
+        }
+
+        updateUI() {
+          this.updateScheduleList();
+          this.updateStats();
+        }
+
+        updateScheduleList() {
+          const listElement = document.getElementById("scheduleList");
+
+          if (this.schedules.length === 0) {
+            listElement.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-icon">📚</div>
+                <h3>No subjects added yet</h3>
+                <p>Add your first subject to get started with AI-powered study planning!</p>
+              </div>
+            `;
+            return;
+          }
+
+          listElement.innerHTML = "";
+
+          this.schedules.forEach((schedule) => {
+            const scheduleElement = document.createElement("div");
+            scheduleElement.className = "schedule-item";
+
+            const progress = this.calculateProgress(schedule);
+            const daysLeft = Math.ceil(
+              (new Date(schedule.examDate) - new Date()) / (1000 * 60 * 60 * 24)
+            );
+
+            scheduleElement.innerHTML = `
+              <div class="schedule-header">
+                <div class="schedule-title">${this.escapeHtml(
+                  schedule.subject
+                )}</div>
+                <div class="schedule-hours">${schedule.dailyHours}h/day</div>
+              </div>
+              <div class="schedule-date">
+                Exam: ${new Date(schedule.examDate).toLocaleDateString()} 
+                (${daysLeft} days left)
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${progress}%;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <span style="font-size: 14px; color: #666;">${progress}% Complete</span>
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn view-plan-btn" data-id="${
+                    schedule.id
+                  }" style="padding: 8px 16px; font-size: 14px;">
+                    📊 View Plan
+                  </button>
+                  <button class="btn btn-secondary generate-plan-btn" data-id="${
+                    schedule.id
+                  }" style="padding: 8px 16px; font-size: 14px;">
+                    ⚡ ${schedule.plan ? "Regenerate" : "Generate"} Plan
+                  </button>
+                  <button class="btn delete-btn" data-id="${
+                    schedule.id
+                  }" style="padding: 8px 16px; font-size: 14px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);">
+                    🗑️ Delete
+                  </button>
+                </div>
+              </div>
+            `;
+
+            // Bind event listeners
+            scheduleElement
+              .querySelector(".view-plan-btn")
+              .addEventListener("click", () => this.showPlan(schedule.id));
+            scheduleElement
+              .querySelector(".generate-plan-btn")
+              .addEventListener("click", () => this.generatePlan(schedule.id));
+            scheduleElement
+              .querySelector(".delete-btn")
+              .addEventListener("click", () =>
+                this.deleteSchedule(schedule.id)
+              );
+
+            listElement.appendChild(scheduleElement);
+          });
+        }
+
+        updateStats() {
+          const totalSubjects = this.schedules.length;
+          const totalHours = this.schedules.reduce(
+            (sum, s) => sum + s.dailyHours,
+            0
+          );
+          const completedTasks = this.schedules.reduce((sum, s) => {
+            if (!s.plan) return sum;
+            return (
+              sum +
+              s.plan.reduce((daySum, day) => {
+                return daySum + day.tasks.filter((t) => t.completed).length;
+              }, 0)
+            );
+          }, 0);
+          const upcomingExams = this.schedules.filter((s) => {
+            const examDate = new Date(s.examDate);
+            const today = new Date();
+            return examDate >= today;
+          }).length;
+
+          document.getElementById("totalSubjects").textContent = totalSubjects;
+          document.getElementById("totalHours").textContent = totalHours;
+          document.getElementById("completedTasks").textContent =
+            completedTasks;
+          document.getElementById("upcomingExams").textContent = upcomingExams;
+        }
+
+        async downloadCurrentPlan() {
+          this.showNotification("PDF download feature coming soon!");
+        }
+
+        async exportAllToPDF() {
+          this.showNotification("Export all feature coming soon!");
+        }
+
+        showLoading(show) {
+          const btnText = document.getElementById("addBtnText");
+          const btnLoader = document.getElementById("addBtnLoader");
+
+          if (show) {
+            btnText.style.display = "none";
+            btnLoader.style.display = "block";
+          } else {
+            btnText.style.display = "block";
+            btnLoader.style.display = "none";
+          }
+        }
+
+        showRegLoading(show) {
+          const btnText = document.getElementById("regBtnText");
+          const btnLoader = document.getElementById("regBtnLoader");
+
+          if (show) {
+            btnText.style.display = "none";
+            btnLoader.style.display = "block";
+          } else {
+            btnText.style.display = "block";
+            btnLoader.style.display = "none";
+          }
+        }
+
+        showNotification(message, type = "success") {
+          const notification = document.getElementById("notification");
+          const notificationText = document.getElementById("notificationText");
+
+          notificationText.textContent = message;
+          notification.className = `notification ${type}`;
+          notification.classList.add("show");
+
+          setTimeout(() => {
+            notification.classList.remove("show");
+          }, 3000);
+        }
+
+        escapeHtml(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          return div.innerHTML;
+        }
+      }
+
+      // Initialize the app when page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        const app = new StudyScheduleApp();
+
+        // Make app globally available for debugging
+        window.app = app;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - StudyMate AI</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --primary-solid: #667eea;
+        --secondary: #f8fafc;
+        --accent: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--primary);
+        min-height: 100vh;
+        color: var(--text-primary);
+      }
+
+      .navbar {
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .back-btn {
+        background: var(--glass);
+        color: white;
+        border: 1px solid var(--glass-border);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: white;
+      }
+
+      .page-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff, #e0e7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .profile-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        height: fit-content;
+      }
+
+      .profile-avatar {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        margin-bottom: 1rem;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .avatar:hover {
+        transform: scale(1.05);
+      }
+
+      .avatar-upload {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 35px;
+        height: 35px;
+        background: var(--success);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        cursor: pointer;
+        border: 3px solid white;
+        transition: all 0.3s ease;
+      }
+
+      .avatar-upload:hover {
+        transform: scale(1.1);
+      }
+
+      .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .profile-email {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: var(--secondary);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-solid);
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      .form-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .form-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border);
+      }
+
+      .form-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .form-subtitle {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .form-input {
+        padding: 0.875rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary-solid);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .form-input:invalid {
+        border-color: var(--error);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-select {
+        padding: 0.875rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        cursor: pointer;
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: var(--primary-solid);
+      }
+
+      .preferences-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .preferences-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+      }
+
+      .preference-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--secondary);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border);
+      }
+
+      .preference-label {
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .preference-description {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background: var(--border);
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .toggle-switch.active {
+        background: var(--primary-solid);
+      }
+
+      .toggle-slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .toggle-switch.active .toggle-slider {
+        transform: translateX(30px);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .btn {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background: var(--primary-solid);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a67d8;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--text-primary);
+        border: 2px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--primary-solid);
+        color: var(--primary-solid);
+      }
+
+      .notification {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateX(400px);
+        transition: all 0.4s ease;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+
+      .notification.success {
+        background: var(--success);
+      }
+      .notification.error {
+        background: var(--error);
+      }
+      .notification.info {
+        background: var(--accent);
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top: 5px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        .profile-container {
+          grid-template-columns: 1fr;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .profile-stats {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-content">
+        <a class="logo" href="dashboard.html"> 📚 StudyMate AI </a>
+        <a href="dashboard.html" class="back-btn"> ← Dashboard </a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="page-header fade-in">
+        <h1>👤 My Profile</h1>
+        <p>Manage your account settings and study preferences</p>
+      </div>
+
+      <div class="profile-container fade-in">
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <div class="avatar" id="profileAvatar">
+              👤
+              <div class="avatar-upload" onclick="uploadAvatar()">📷</div>
+            </div>
+            <div class="profile-name" id="displayName">Loading...</div>
+            <div class="profile-email" id="displayEmail">Loading...</div>
+          </div>
+
+          <div class="profile-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="studyStreak">15</div>
+              <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="totalHours">127</div>
+              <div class="stat-label">Total Hours</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="completedQuizzes">43</div>
+              <div class="stat-label">Quizzes Done</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="averageScore">87%</div>
+              <div class="stat-label">Avg Score</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-container">
+          <div class="form-header">
+            <h2 class="form-title">Personal Information</h2>
+            <p class="form-subtitle">
+              Update your profile details and account information
+            </p>
+          </div>
+
+          <form id="profileForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="firstName">First Name</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  class="form-input"
+                  placeholder="Enter your first name"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="lastName">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  class="form-input"
+                  placeholder="Enter your last name"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-input"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  class="form-input"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="dateOfBirth"
+                  >Date of Birth</label
+                >
+                <input type="date" id="dateOfBirth" class="form-input" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="grade">Grade/Level</label>
+                <select id="grade" class="form-select">
+                  <option value="">Select your grade</option>
+                  <option value="9">9th Grade</option>
+                  <option value="10">10th Grade</option>
+                  <option value="11">11th Grade</option>
+                  <option value="12">12th Grade</option>
+                  <option value="college">College/University</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="bio">Bio</label>
+              <textarea
+                id="bio"
+                class="form-input form-textarea"
+                placeholder="Tell us about yourself, your academic goals, and interests..."
+              ></textarea>
+            </div>
+
+            <div class="preferences-section">
+              <h3 class="preferences-title">Study Preferences</h3>
+
+              <div class="preference-item">
+                <div>
+                  <div class="preference-label">Email Notifications</div>
+                  <div class="preference-description">
+                    Receive study reminders and progress updates via email
+                  </div>
+                </div>
+                <div class="toggle-switch" data-preference="emailNotifications">
+                  <div class="toggle-slider"></div>
+                </div>
+              </div>
+
+              <div class="preference-item">
+                <div>
+                  <div class="preference-label">Push Notifications</div>
+                  <div class="preference-description">
+                    Get real-time notifications for study sessions and deadlines
+                  </div>
+                </div>
+                <div
+                  class="toggle-switch active"
+                  data-preference="pushNotifications"
+                >
+                  <div class="toggle-slider"></div>
+                </div>
+              </div>
+
+              <div class="preference-item">
+                <div>
+                  <div class="preference-label">Dark Mode</div>
+                  <div class="preference-description">
+                    Use dark theme for better studying in low light
+                  </div>
+                </div>
+                <div class="toggle-switch" data-preference="darkMode">
+                  <div class="toggle-slider"></div>
+                </div>
+              </div>
+
+              <div class="preference-item">
+                <div>
+                  <div class="preference-label">Auto-save Notes</div>
+                  <div class="preference-description">
+                    Automatically save your notes and study materials
+                  </div>
+                </div>
+                <div class="toggle-switch active" data-preference="autoSave">
+                  <div class="toggle-slider"></div>
+                </div>
+              </div>
+
+              <div class="preference-item">
+                <div>
+                  <div class="preference-label">Advanced Analytics</div>
+                  <div class="preference-description">
+                    Enable detailed study pattern analysis and insights
+                  </div>
+                </div>
+                <div class="toggle-switch active" data-preference="analytics">
+                  <div class="toggle-slider"></div>
+                </div>
+              </div>
+
+              <div class="preference-item">
+                <div>
+                  <div class="preference-label">Study Reminders</div>
+                  <div class="preference-description">
+                    Get reminded about scheduled study sessions and breaks
+                  </div>
+                </div>
+                <div
+                  class="toggle-switch active"
+                  data-preference="studyReminders"
+                >
+                  <div class="toggle-slider"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="resetForm()"
+              >
+                🔄 Reset
+              </button>
+              <button type="submit" class="btn btn-primary" id="saveBtn">
+                💾 Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <!-- <script>
+      // Mock user data - in a real app, this would come from an API
+      let userData = {
+        firstName: "Alex",
+        lastName: "Johnson",
+        email: "alex.johnson@email.com",
+        phone: "+1-234-567-8900",
+        dateOfBirth: "2005-03-15",
+        grade: "12",
+        bio: "Passionate high school student preparing for college entrance exams. Love mathematics and science!",
+        preferences: {
+          emailNotifications: false,
+          pushNotifications: true,
+          darkMode: false,
+          autoSave: true,
+          analytics: true,
+          studyReminders: true,
+        },
+        stats: {
+          studyStreak: 15,
+          totalHours: 127,
+          completedQuizzes: 43,
+          averageScore: 87,
+        },
+      };
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", function () {
+        loadUserData();
+        setupEventListeners();
+        animateStats();
+      });
+
+      function loadUserData() {
+        // Load basic info
+        document.getElementById("firstName").value = userData.firstName || "";
+        document.getElementById("lastName").value = userData.lastName || "";
+        document.getElementById("email").value = userData.email || "";
+        document.getElementById("phone").value = userData.phone || "";
+        document.getElementById("dateOfBirth").value =
+          userData.dateOfBirth || "";
+        document.getElementById("grade").value = userData.grade || "";
+        document.getElementById("bio").value = userData.bio || "";
+
+        // Update display
+        updateDisplayInfo();
+
+        // Load preferences
+        Object.keys(userData.preferences).forEach((key) => {
+          const toggle = document.querySelector(`[data-preference="${key}"]`);
+          if (toggle) {
+            if (userData.preferences[key]) {
+              toggle.classList.add("active");
+            } else {
+              toggle.classList.remove("active");
+            }
+          }
+        });
+
+        // Load stats
+        Object.keys(userData.stats).forEach((key) => {
+          const element = document.getElementById(key);
+          if (element) {
+            element.textContent =
+              typeof userData.stats[key] === "number" && key === "averageScore"
+                ? userData.stats[key] + "%"
+                : userData.stats[key];
+          }
+        });
+      }
+
+      function updateDisplayInfo() {
+        const fullName =
+          `${userData.firstName} ${userData.lastName}`.trim() || "Student";
+        const email = userData.email || "No email set";
+
+        document.getElementById("displayName").textContent = fullName;
+        document.getElementById("displayEmail").textContent = email;
+
+        // Update avatar with initials
+        const initials = fullName
+          .split(" ")
+          .map((name) => name[0])
+          .join("")
+          .toUpperCase()
+          .substring(0, 2);
+        if (initials && initials !== "S") {
+          document.getElementById("profileAvatar").textContent = initials;
+        }
+      }
+
+      function setupEventListeners() {
+        // Form submission
+        document
+          .getElementById("profileForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            saveProfile();
+          });
+
+        // Toggle switches
+        document.querySelectorAll(".toggle-switch").forEach((toggle) => {
+          toggle.addEventListener("click", function () {
+            this.classList.toggle("active");
+            const preference = this.dataset.preference;
+            userData.preferences[preference] =
+              this.classList.contains("active");
+
+            // Special handling for dark mode
+            if (preference === "darkMode") {
+              toggleDarkMode(this.classList.contains("active"));
+            }
+          });
+        });
+
+        // Real-time form validation
+        document.querySelectorAll(".form-input").forEach((input) => {
+          input.addEventListener("input", function () {
+            validateField(this);
+          });
+
+          input.addEventListener("blur", function () {
+            validateField(this);
+          });
+        });
+      }
+
+      function validateField(field) {
+        const isValid = field.checkValidity();
+        field.style.borderColor = isValid ? "var(--border)" : "var(--error)";
+
+        if (!isValid && field.value) {
+          field.style.borderColor = "var(--error)";
+        } else if (isValid && field.value) {
+          field.style.borderColor = "var(--success)";
+        } else {
+          field.style.borderColor = "var(--border)";
+        }
+      }
+
+      function saveProfile() {
+        showLoadingOverlay(true);
+
+        // Collect form data
+        const formData = {
+          firstName: document.getElementById("firstName").value,
+          lastName: document.getElementById("lastName").value,
+          email: document.getElementById("email").value,
+          phone: document.getElementById("phone").value,
+          dateOfBirth: document.getElementById("dateOfBirth").value,
+          grade: document.getElementById("grade").value,
+          bio: document.getElementById("bio").value,
+        };
+
+        // Simulate API call
+        setTimeout(() => {
+          // Update userData
+          Object.assign(userData, formData);
+          updateDisplayInfo();
+
+          showLoadingOverlay(false);
+          showNotification("✅ Profile updated successfully!", "success");
+
+          // Add to activities (simulate)
+          console.log("Profile updated at:", new Date().toISOString());
+        }, 1500);
+      }
+
+      function resetForm() {
+        if (
+          confirm(
+            "Are you sure you want to reset all changes? This will restore your last saved profile."
+          )
+        ) {
+          loadUserData();
+          showNotification("🔄 Profile reset to last saved version", "info");
+        }
+      }
+
+      function uploadAvatar() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = function (e) {
+          if (e.target.files[0]) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+              const avatar = document.getElementById("profileAvatar");
+              avatar.style.backgroundImage = `url(${event.target.result})`;
+              avatar.style.backgroundSize = "cover";
+              avatar.style.backgroundPosition = "center";
+              avatar.textContent = "";
+
+              showNotification("📷 Profile picture updated!", "success");
+            };
+
+            reader.readAsDataURL(file);
+          }
+        };
+        input.click();
+      }
+
+      function toggleDarkMode(enabled) {
+        if (enabled) {
+          document.body.style.filter = "invert(1) hue-rotate(180deg)";
+          showNotification("🌙 Dark mode enabled", "info");
+        } else {
+          document.body.style.filter = "none";
+          showNotification("☀️ Light mode enabled", "info");
+        }
+      }
+
+      function animateStats() {
+        Object.keys(userData.stats).forEach((key, index) => {
+          setTimeout(() => {
+            animateValue(key, 0, userData.stats[key], 1000);
+          }, index * 200);
+        });
+      }
+
+      function animateValue(elementId, start, end, duration) {
+        const element = document.getElementById(elementId);
+        const range = end - start;
+        const startTime = performance.now();
+        const isPercentage =
+          typeof end === "number" && elementId === "averageScore";
+
+        function updateValue(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const current = start + range * progress;
+
+          element.textContent = isPercentage
+            ? Math.round(current) + "%"
+            : Math.round(current);
+
+          if (progress < 1) {
+            requestAnimationFrame(updateValue);
+          }
+        }
+
+        requestAnimationFrame(updateValue);
+      }
+
+      function showLoadingOverlay(show) {
+        const overlay = document.getElementById("loadingOverlay");
+        overlay.style.display = show ? "flex" : "none";
+      }
+
+      function showNotification(message, type) {
+        // Remove existing notification
+        const existingNotification = document.querySelector(".notification");
+        if (existingNotification) {
+          existingNotification.remove();
+        }
+
+        const notification = document.createElement("div");
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.classList.add("show");
+        }, 100);
+
+        setTimeout(() => {
+          notification.classList.remove("show");
+          setTimeout(() => notification.remove(), 400);
+        }, 3000);
+      }
+
+      // Auto-save functionality
+      let autoSaveTimer;
+      function startAutoSave() {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(() => {
+          if (userData.preferences.autoSave) {
+            saveProfile();
+          }
+        }, 30000); // Auto-save after 30 seconds of inactivity
+      }
+
+      // Add auto-save listeners
+      document.querySelectorAll(".form-input").forEach((input) => {
+        input.addEventListener("input", startAutoSave);
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", function (e) {
+        if (e.ctrlKey || e.metaKey) {
+          switch (e.key) {
+            case "s":
+              e.preventDefault();
+              saveProfile();
+              break;
+            case "r":
+              e.preventDefault();
+              resetForm();
+              break;
+          }
+        }
+      });
+
+      // Real-time field updates
+      document
+        .getElementById("firstName")
+        .addEventListener("input", function () {
+          userData.firstName = this.value;
+          updateDisplayInfo();
+        });
+
+      document
+        .getElementById("lastName")
+        .addEventListener("input", function () {
+          userData.lastName = this.value;
+          updateDisplayInfo();
+        });
+
+      document.getElementById("email").addEventListener("input", function () {
+        userData.email = this.value;
+        updateDisplayInfo();
+      });
+
+      // Form validation on submit
+      document
+        .getElementById("profileForm")
+        .addEventListener("submit", function (e) {
+          let isValid = true;
+
+          // Check required fields
+          const requiredFields = ["firstName", "lastName", "email"];
+          requiredFields.forEach((fieldId) => {
+            const field = document.getElementById(fieldId);
+            if (!field.value.trim()) {
+              validateField(field);
+              isValid = false;
+            }
+          });
+
+          // Email validation
+          const email = document.getElementById("email");
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (email.value && !emailRegex.test(email.value)) {
+            email.style.borderColor = "var(--error)";
+            isValid = false;
+            showNotification("❌ Please enter a valid email address", "error");
+          }
+
+          if (!isValid) {
+            e.preventDefault();
+            showNotification(
+              "❌ Please fill in all required fields correctly",
+              "error"
+            );
+          }
+        });
+
+      // Page visibility API for auto-save
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden && userData.preferences.autoSave) {
+          // Auto-save when user switches tabs or minimizes window
+          const formData = new FormData(document.getElementById("profileForm"));
+          let hasChanges = false;
+
+          for (let [key, value] of formData.entries()) {
+            if (userData[key] !== value) {
+              hasChanges = true;
+              break;
+            }
+          }
+
+          if (hasChanges) {
+            saveProfile();
+          }
+        }
+      });
+    </script> -->
+    <script type="module" src="js/profile-loader.js"></script>
+  </body>
+</html>

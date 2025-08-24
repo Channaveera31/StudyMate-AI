@@ -1,0 +1,47 @@
+.planner-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.planner-input {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.planner-input label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.planner-input input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+#generatePlanBtn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#planOutput {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  white-space: pre-wrap;
+  font-size: 1rem;
+}

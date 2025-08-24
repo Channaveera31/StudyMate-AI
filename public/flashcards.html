@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Flashcards - StudyMate AI</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .navbar {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .page-title {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .stats {
+        display: flex;
+        gap: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+      }
+
+      .main-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .input-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .input-section h2 {
+        margin-bottom: 1rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .notes-textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 1rem;
+        border: 2px solid #f0f0f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-family: inherit;
+        resize: vertical;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .notes-textarea:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .input-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.8);
+        color: #333;
+        border: 2px solid #f0f0f0;
+      }
+
+      .btn-secondary:hover {
+        background: white;
+        transform: translateY(-2px);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn.loading {
+        color: transparent;
+      }
+
+      .btn.loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      .flashcards-container {
+        position: relative;
+      }
+
+      .container-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .container-header h2 {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .study-mode-toggle {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 0.5rem;
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .mode-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .mode-btn.active {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+      }
+
+      .flashcards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .flashcard {
+        height: 200px;
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      .flashcard-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+      }
+
+      .flashcard.flipped .flashcard-inner {
+        transform: rotateY(180deg);
+      }
+
+      .flashcard-front,
+      .flashcard-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+
+      .flashcard-front {
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        backdrop-filter: blur(20px);
+      }
+
+      .flashcard-back {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        transform: rotateY(180deg);
+      }
+
+      .flashcard-actions {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .flashcard:hover .flashcard-actions {
+        opacity: 1;
+      }
+
+      .card-action-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.1);
+        color: #333;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .card-action-btn:hover {
+        background: rgba(0, 0, 0, 0.2);
+        transform: scale(1.1);
+      }
+
+      .study-session {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        display: none;
+      }
+
+      .study-session.active {
+        display: block;
+      }
+
+      .session-card {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        height: 300px;
+        perspective: 1000px;
+      }
+
+      .session-progress {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+      }
+
+      .progress-bar {
+        flex: 1;
+        height: 8px;
+        background: #f0f0f0;
+        border-radius: 4px;
+        margin: 0 1rem;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: width 0.3s ease;
+        border-radius: 4px;
+      }
+
+      .session-controls {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .difficulty-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .difficulty-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .difficulty-easy {
+        background: #10b981;
+        color: white;
+      }
+
+      .difficulty-medium {
+        background: #f59e0b;
+        color: white;
+      }
+
+      .difficulty-hard {
+        background: #ef4444;
+        color: white;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+        padding: 4rem 2rem;
+      }
+
+      .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .notification {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease-out;
+      }
+
+      .notification.success {
+        background: #10b981;
+      }
+
+      .notification.error {
+        background: #ef4444;
+      }
+
+      .notification.info {
+        background: #3b82f6;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          padding: 1rem;
+        }
+
+        .flashcards-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .input-actions {
+          flex-direction: column;
+        }
+
+        .nav-content {
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-content">
+        <div class="nav-left">
+          <a href="dashboard.html" class="back-btn">← Back</a>
+          <h1 class="page-title">🧠 Smart Flashcards</h1>
+        </div>
+        <div class="stats">
+          <span id="cardCount">0 cards</span>
+          <span id="studyStreak">0 day streak</span>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <!-- Input Section -->
+      <section class="input-section">
+        <h2>✨ Generate Flashcards</h2>
+        <textarea
+          id="notesInput"
+          class="notes-textarea"
+          placeholder="Paste your notes here or describe what you want to study...
+
+Example:
+- Photosynthesis is the process by which plants convert sunlight into energy
+- The mitochondria is the powerhouse of the cell
+- JavaScript is a programming language used for web development
+
+AI will automatically create question-answer pairs from your content!"
+        ></textarea>
+
+        <div class="input-actions">
+          <button id="generateBtn" class="btn btn-primary">
+            ✨ Generate Flashcards
+          </button>
+          <button id="uploadFileBtn" class="btn btn-secondary">
+            📁 Upload File
+          </button>
+          <button id="clearAllBtn" class="btn btn-danger">🗑️ Clear All</button>
+          <input
+            type="file"
+            id="fileInput"
+            accept=".txt,.pdf,.docx"
+            style="display: none"
+          />
+        </div>
+      </section>
+
+      <!-- Flashcards Container -->
+      <section class="flashcards-container">
+        <div class="container-header">
+          <h2>📚 Your Flashcards</h2>
+          <div class="study-mode-toggle">
+            <button class="mode-btn active" data-mode="browse" id="browseMode">
+              Browse
+            </button>
+            <button class="mode-btn" data-mode="study" id="studyMode">
+              Study Session
+            </button>
+          </div>
+        </div>
+
+        <!-- Browse Mode -->
+        <div id="browseView">
+          <div class="flashcards-grid" id="flashcardsGrid">
+            <!-- Example cards will be populated here -->
+          </div>
+
+          <div class="empty-state" id="emptyState">
+            <span class="empty-state-icon">🤖</span>
+            <h3>Ready to create your first flashcards!</h3>
+            <p>
+              Add your study notes above and I'll generate intelligent
+              flashcards for you.
+            </p>
+          </div>
+        </div>
+
+        <!-- Study Session Mode -->
+        <div class="study-session" id="studySession">
+          <div class="session-progress">
+            <span id="currentCardNum">1</span>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span id="totalCards">10</span>
+          </div>
+
+          <div class="session-card">
+            <div class="flashcard" id="sessionCard">
+              <div class="flashcard-inner">
+                <div class="flashcard-front">
+                  <p id="sessionQuestion">Click to start your study session!</p>
+                </div>
+                <div class="flashcard-back">
+                  <p id="sessionAnswer">Click "Start Session" to begin</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="session-controls">
+            <button id="startSessionBtn" class="btn btn-primary">
+              🎯 Start Session
+            </button>
+            <button
+              id="showAnswerBtn"
+              class="btn btn-secondary"
+              style="display: none"
+            >
+              👁️ Show Answer
+            </button>
+            <button
+              id="nextCardBtn"
+              class="btn btn-primary"
+              style="display: none"
+            >
+              ➡️ Next Card
+            </button>
+            <button
+              id="endSessionBtn"
+              class="btn btn-danger"
+              style="display: none"
+            >
+              ⏹️ End Session
+            </button>
+          </div>
+
+          <div
+            class="difficulty-buttons"
+            id="difficultyButtons"
+            style="display: none"
+          >
+            <button
+              class="difficulty-btn difficulty-easy"
+              onclick="markDifficulty('easy')"
+            >
+              😊 Easy
+            </button>
+            <button
+              class="difficulty-btn difficulty-medium"
+              onclick="markDifficulty('medium')"
+            >
+              🤔 Medium
+            </button>
+            <button
+              class="difficulty-btn difficulty-hard"
+              onclick="markDifficulty('hard')"
+            >
+              😰 Hard
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Application state
+      let flashcards = [];
+      let currentStudyIndex = 0;
+      let studySessionActive = false;
+      let currentMode = "browse";
+      let studyStats = {
+        streak: 0,
+        totalStudied: 0,
+        correctAnswers: 0,
+      };
+
+      // Initialize application
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeApp();
+        loadFlashcards();
+        setupEventListeners();
+        updateStats();
+      });
+
+      function initializeApp() {
+        // Load example cards
+        const exampleCards = [
+          {
+            id: Date.now(),
+            question: "What is artificial intelligence?",
+            answer:
+              "AI is the simulation of human intelligence in machines that are programmed to think and learn.",
+            difficulty: "medium",
+            lastReviewed: null,
+            correctCount: 0,
+          },
+        ];
+
+        if (flashcards.length === 0) {
+          flashcards = exampleCards;
+          saveFlashcards();
+        }
+
+        renderFlashcards();
+      }
+
+      function setupEventListeners() {
+        // Generation
+        document
+          .getElementById("generateBtn")
+          .addEventListener("click", generateFlashcards);
+        document
+          .getElementById("uploadFileBtn")
+          .addEventListener("click", () => {
+            document.getElementById("fileInput").click();
+          });
+        document
+          .getElementById("fileInput")
+          .addEventListener("change", handleFileUpload);
+        document
+          .getElementById("clearAllBtn")
+          .addEventListener("click", clearAllCards);
+
+        // Mode switching
+        document
+          .getElementById("browseMode")
+          .addEventListener("click", () => switchMode("browse"));
+        document
+          .getElementById("studyMode")
+          .addEventListener("click", () => switchMode("study"));
+
+        // Study session
+        document
+          .getElementById("startSessionBtn")
+          .addEventListener("click", startStudySession);
+        document
+          .getElementById("showAnswerBtn")
+          .addEventListener("click", showAnswer);
+        document
+          .getElementById("nextCardBtn")
+          .addEventListener("click", nextCard);
+        document
+          .getElementById("endSessionBtn")
+          .addEventListener("click", endStudySession);
+
+        // Real-time input processing
+        let typingTimer;
+        document
+          .getElementById("notesInput")
+          .addEventListener("input", function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+              if (this.value.trim().length > 50) {
+                showNotification("Ready to generate flashcards!", "info");
+              }
+            }, 2000);
+          });
+      }
+
+      async function generateFlashcards() {
+        const notesInput = document.getElementById("notesInput");
+        const generateBtn = document.getElementById("generateBtn");
+        const notes = notesInput.value.trim();
+
+        if (!notes) {
+          showNotification("Please enter some notes first!", "error");
+          return;
+        }
+
+        if (notes.length < 20) {
+          showNotification(
+            "Please provide more detailed notes for better flashcards",
+            "error"
+          );
+          return;
+        }
+
+        // Show loading state
+        generateBtn.classList.add("loading");
+        generateBtn.disabled = true;
+
+        try {
+          // Simulate AI generation
+          showNotification("AI is analyzing your notes...", "info");
+          const newCards = await simulateAIGeneration(notes);
+
+          // Add to flashcards
+          flashcards.push(...newCards);
+          saveFlashcards();
+          renderFlashcards();
+
+          showNotification(
+            `Generated ${newCards.length} new flashcards!`,
+            "success"
+          );
+
+          // Clear input
+          notesInput.value = "";
+        } catch (error) {
+          showNotification(
+            "Error generating flashcards. Please try again.",
+            "error"
+          );
+        } finally {
+          generateBtn.classList.remove("loading");
+          generateBtn.disabled = false;
+        }
+      }
+
+      async function simulateAIGeneration(notes) {
+        // Simulate AI processing delay
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const sentences = notes
+          .split(/[.!?]+/)
+          .filter((s) => s.trim().length > 10);
+        const newCards = [];
+
+        sentences.forEach((sentence, index) => {
+          if (sentence.trim()) {
+            const words = sentence.trim().split(" ");
+            if (words.length > 5) {
+              // Create question-answer pairs
+              const question = generateQuestion(sentence.trim());
+              const answer = sentence.trim();
+
+              newCards.push({
+                id: Date.now() + index,
+                question,
+                answer,
+                difficulty: "medium",
+                lastReviewed: null,
+                correctCount: 0,
+                createdAt: new Date().toISOString(),
+              });
+            }
+          }
+        });
+
+        return newCards.slice(0, Math.min(8, newCards.length)); // Limit to 8 cards
+      }
+
+      function generateQuestion(statement) {
+        const questionStarters = [
+          "What is",
+          "Define",
+          "Explain",
+          "What does",
+          "How does",
+          "Why is",
+          "What are the characteristics of",
+        ];
+
+        // Simple question generation logic
+        if (statement.includes(" is ")) {
+          const parts = statement.split(" is ");
+          return `What is ${parts[0].toLowerCase()}?`;
+        } else if (statement.includes(" are ")) {
+          const parts = statement.split(" are ");
+          return `What are ${parts[0].toLowerCase()}?`;
+        } else {
+          const randomStarter =
+            questionStarters[
+              Math.floor(Math.random() * questionStarters.length)
+            ];
+          const firstWords = statement
+            .split(" ")
+            .slice(0, 3)
+            .join(" ")
+            .toLowerCase();
+          return `${randomStarter} ${firstWords}?`;
+        }
+      }
+
+      function renderFlashcards() {
+        const grid = document.getElementById("flashcardsGrid");
+        const emptyState = document.getElementById("emptyState");
+
+        if (flashcards.length === 0) {
+          grid.style.display = "none";
+          emptyState.style.display = "block";
+          return;
+        }
+
+        grid.style.display = "grid";
+        emptyState.style.display = "none";
+
+        grid.innerHTML = flashcards
+          .map(
+            (card) => `
+                <div class="flashcard" data-id="${card.id}" onclick="flipCard(this)">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <p>${card.question}</p>
+                        </div>
+                        <div class="flashcard-back">
+                            <p>${card.answer}</p>
+                        </div>
+                    </div>
+                    <div class="flashcard-actions">
+                        <button class="card-action-btn" onclick="editCard(event, '${card.id}')" title="Edit">✏️</button>
+                        <button class="card-action-btn" onclick="deleteCard(event, '${card.id}')" title="Delete">🗑️</button>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function flipCard(cardElement) {
+        cardElement.classList.toggle("flipped");
+      }
+
+      function deleteCard(event, cardId) {
+        event.stopPropagation();
+        if (confirm("Are you sure you want to delete this flashcard?")) {
+          flashcards = flashcards.filter((card) => card.id !== cardId);
+          saveFlashcards();
+          renderFlashcards();
+          updateStats();
+          showNotification("Flashcard deleted!", "success");
+        }
+      }
+
+      function editCard(event, cardId) {
+        event.stopPropagation();
+        const card = flashcards.find((c) => c.id === cardId);
+        if (card) {
+          const newQuestion = prompt("Edit question:", card.question);
+          if (newQuestion && newQuestion.trim()) {
+            const newAnswer = prompt("Edit answer:", card.answer);
+            if (newAnswer && newAnswer.trim()) {
+              card.question = newQuestion.trim();
+              card.answer = newAnswer.trim();
+              saveFlashcards();
+              renderFlashcards();
+              showNotification("Flashcard updated!", "success");
+            }
+          }
+        }
+      }
+
+      function switchMode(mode) {
+        currentMode = mode;
+
+        // Update active button
+        document.querySelectorAll(".mode-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        document.getElementById(mode + "Mode").classList.add("active");
+
+        // Show/hide views
+        if (mode === "browse") {
+          document.getElementById("browseView").style.display = "block";
+          document.getElementById("studySession").classList.remove("active");
+        } else {
+          document.getElementById("browseView").style.display = "none";
+          document.getElementById("studySession").classList.add("active");
+          setupStudySession();
+        }
+      }
+
+      function setupStudySession() {
+        if (flashcards.length === 0) {
+          document.getElementById("sessionQuestion").textContent =
+            "No flashcards available. Create some first!";
+          document.getElementById("sessionAnswer").textContent =
+            "Go back to browse mode and generate flashcards.";
+          return;
+        }
+
+        document.getElementById("totalCards").textContent = flashcards.length;
+        document.getElementById("sessionQuestion").textContent =
+          'Click "Start Session" to begin studying!';
+        document.getElementById("sessionAnswer").textContent =
+          "Ready when you are!";
+      }
+
+      function startStudySession() {
+        if (flashcards.length === 0) {
+          showNotification(
+            "No flashcards to study! Create some first.",
+            "error"
+          );
+          return;
+        }
+
+        studySessionActive = true;
+        currentStudyIndex = 0;
+
+        // Shuffle cards for variety
+        flashcards = shuffleArray([...flashcards]);
+
+        // Update UI
+        document.getElementById("startSessionBtn").style.display = "none";
+        document.getElementById("showAnswerBtn").style.display = "inline-flex";
+        document.getElementById("endSessionBtn").style.display = "inline-flex";
+
+        loadCurrentCard();
+        showNotification("Study session started! 🎯", "success");
+      }
+
+      function loadCurrentCard() {
+        const card = flashcards[currentStudyIndex];
+        document.getElementById("sessionQuestion").textContent = card.question;
+        document.getElementById("sessionAnswer").textContent = card.answer;
+        document.getElementById("currentCardNum").textContent =
+          currentStudyIndex + 1;
+
+        // Reset card state
+        document.getElementById("sessionCard").classList.remove("flipped");
+        document.getElementById("showAnswerBtn").style.display = "inline-flex";
+        document.getElementById("nextCardBtn").style.display = "none";
+        document.getElementById("difficultyButtons").style.display = "none";
+
+        updateProgress();
+      }
+
+      function showAnswer() {
+        document.getElementById("sessionCard").classList.add("flipped");
+        document.getElementById("showAnswerBtn").style.display = "none";
+        document.getElementById("nextCardBtn").style.display = "inline-flex";
+        document.getElementById("difficultyButtons").style.display = "flex";
+      }
+
+      function nextCard() {
+        currentStudyIndex++;
+
+        if (currentStudyIndex >= flashcards.length) {
+          endStudySession();
+          showNotification("🎉 Study session completed! Great job!", "success");
+          return;
+        }
+
+        loadCurrentCard();
+      }
+
+      function markDifficulty(difficulty) {
+        const card = flashcards[currentStudyIndex];
+        card.difficulty = difficulty;
+        card.lastReviewed = new Date().toISOString();
+
+        if (difficulty === "easy") {
+          card.correctCount++;
+          studyStats.correctAnswers++;
+        }
+
+        saveFlashcards();
+
+        // Visual feedback
+        const btn = event.target;
+        btn.style.transform = "scale(1.2)";
+        setTimeout(() => (btn.style.transform = "scale(1)"), 200);
+      }
+
+      function endStudySession() {
+        studySessionActive = false;
+        studyStats.totalStudied += currentStudyIndex;
+        studyStats.streak++;
+
+        // Reset UI
+        document.getElementById("startSessionBtn").style.display =
+          "inline-flex";
+        document.getElementById("showAnswerBtn").style.display = "none";
+        document.getElementById("nextCardBtn").style.display = "none";
+        document.getElementById("endSessionBtn").style.display = "none";
+        document.getElementById("difficultyButtons").style.display = "none";
+
+        setupStudySession();
+        updateStats();
+        saveStats();
+      }
+
+      function updateProgress() {
+        const progress = (currentStudyIndex / flashcards.length) * 100;
+        document.getElementById("progressFill").style.width = progress + "%";
+      }
+
+      function updateStats() {
+        document.getElementById(
+          "cardCount"
+        ).textContent = `${flashcards.length} cards`;
+        document.getElementById(
+          "studyStreak"
+        ).textContent = `${studyStats.streak} day streak`;
+      }
+
+      function clearAllCards() {
+        if (
+          confirm(
+            "Are you sure you want to delete all flashcards? This cannot be undone."
+          )
+        ) {
+          flashcards = [];
+          saveFlashcards();
+          renderFlashcards();
+          updateStats();
+          showNotification("All flashcards cleared!", "success");
+        }
+      }
+
+      function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const content = e.target.result;
+          document.getElementById("notesInput").value = content;
+          showNotification(
+            "File content loaded! Ready to generate flashcards.",
+            "success"
+          );
+        };
+        reader.readAsText(file);
+      }
+
+      function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+      }
+
+      function saveFlashcards() {
+        localStorage.setItem(
+          "studymate_flashcards",
+          JSON.stringify(flashcards)
+        );
+      }
+
+      function loadFlashcards() {
+        const saved = localStorage.getItem("studymate_flashcards");
+        if (saved) {
+          flashcards = JSON.parse(saved);
+        }
+      }
+
+      function saveStats() {
+        localStorage.setItem("studymate_stats", JSON.stringify(studyStats));
+      }
+
+      function loadStats() {
+        const saved = localStorage.getItem("studymate_stats");
+        if (saved) {
+          studyStats = JSON.parse(saved);
+        }
+      }
+
+      function showNotification(message, type = "info") {
+        const notification = document.createElement("div");
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.style.animation = "slideInRight 0.3s ease-out reverse";
+          setTimeout(() => notification.remove(), 300);
+        }, 3000);
+      }
+
+      // Load stats on startup
+      loadStats();
+
+      // Auto-save periodically
+      setInterval(() => {
+        saveFlashcards();
+        saveStats();
+      }, 30000);
+    </script>
+  </body>
+</html>

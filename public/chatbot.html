@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Chatbot - StudyMate AI</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 25px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(72, 187, 120, 0.2);
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #48bb78;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      .chat-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        background: linear-gradient(to bottom, #f8fafc, #e2e8f0);
+      }
+
+      .message {
+        display: flex;
+        margin-bottom: 20px;
+        opacity: 0;
+        animation: slideIn 0.5s ease-out forwards;
+      }
+
+      .message.user {
+        justify-content: flex-end;
+      }
+
+      .message-content {
+        max-width: 70%;
+        padding: 16px 20px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+
+      .message.user .message-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom-right-radius: 8px;
+      }
+
+      .message.bot .message-content {
+        background: white;
+        color: #2d3748;
+        border-bottom-left-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .message-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 12px;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .message.user .message-avatar {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+      }
+
+      .message.bot .message-avatar {
+        background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        color: white;
+      }
+
+      .typing-indicator {
+        display: none;
+        padding: 16px 20px;
+        background: white;
+        border-radius: 20px;
+        border-bottom-left-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 70%;
+      }
+
+      .typing-dots {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .typing-dot {
+        width: 8px;
+        height: 8px;
+        background: #cbd5e0;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+      }
+
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      .input-container {
+        padding: 20px;
+        background: white;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .input-wrapper {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+        background: #f7fafc;
+        border-radius: 25px;
+        padding: 8px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .input-wrapper:focus-within {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .message-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 12px 16px;
+        font-size: 1rem;
+        background: transparent;
+        resize: none;
+        max-height: 120px;
+        min-height: 44px;
+        line-height: 1.5;
+      }
+
+      .send-btn {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .send-btn:hover:not(:disabled) {
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .quick-actions {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .quick-btn {
+        padding: 8px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        background: white;
+        color: #4a5568;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .quick-btn:hover {
+        border-color: #667eea;
+        background: #667eea;
+        color: white;
+        transform: translateY(-1px);
+      }
+
+      .welcome-message {
+        text-align: center;
+        padding: 40px 20px;
+        color: #718096;
+      }
+
+      .welcome-message h2 {
+        color: #2d3748;
+        margin-bottom: 12px;
+        font-size: 1.5rem;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-card i {
+        font-size: 2rem;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          height: 100vh;
+          margin: 0;
+        }
+
+        .header {
+          padding: 16px 20px;
+        }
+
+        .header h1 {
+          font-size: 1.4rem;
+        }
+
+        .messages {
+          padding: 16px;
+        }
+
+        .message-content {
+          max-width: 85%;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <a href="dashboard.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          Back
+        </a>
+        <h1>
+          <i class="fas fa-robot"></i>
+          AI Study Assistant
+        </h1>
+        <div class="status">
+          <div class="status-dot"></div>
+          Online
+        </div>
+      </div>
+
+      <div class="chat-container">
+        <div class="messages" id="messages">
+          <div class="welcome-message">
+            <h2>👋 Hello! I'm your AI Study Assistant</h2>
+            <p>
+              I'm here to help you with your studies, answer questions, explain
+              concepts, and provide personalized learning support.
+            </p>
+
+            <div class="features-grid">
+              <div
+                class="feature-card"
+                onclick="sendQuickMessage('Explain a difficult concept')"
+              >
+                <i class="fas fa-lightbulb"></i>
+                <h3>Explain Concepts</h3>
+                <p>Get clear explanations for any topic</p>
+              </div>
+              <div
+                class="feature-card"
+                onclick="sendQuickMessage('Help me solve a problem')"
+              >
+                <i class="fas fa-calculator"></i>
+                <h3>Solve Problems</h3>
+                <p>Step-by-step problem solving</p>
+              </div>
+              <div
+                class="feature-card"
+                onclick="sendQuickMessage('Create a study plan')"
+              >
+                <i class="fas fa-calendar-check"></i>
+                <h3>Study Planning</h3>
+                <p>Personalized study schedules</p>
+              </div>
+              <div
+                class="feature-card"
+                onclick="sendQuickMessage('Quiz me on a topic')"
+              >
+                <i class="fas fa-question-circle"></i>
+                <h3>Practice Quiz</h3>
+                <p>Test your knowledge</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="message bot typing-indicator" id="typingIndicator">
+            <div class="message-avatar">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="typing-indicator">
+              <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-container">
+          <div class="quick-actions">
+            <button
+              class="quick-btn"
+              onclick="sendQuickMessage('What is photosynthesis?')"
+            >
+              🌱 Photosynthesis
+            </button>
+            <button
+              class="quick-btn"
+              onclick="sendQuickMessage('Explain calculus derivatives')"
+            >
+              📊 Calculus
+            </button>
+            <button
+              class="quick-btn"
+              onclick="sendQuickMessage('Help with essay writing')"
+            >
+              ✍️ Essay Help
+            </button>
+            <button
+              class="quick-btn"
+              onclick="sendQuickMessage('Study tips for exams')"
+            >
+              📚 Study Tips
+            </button>
+          </div>
+
+          <div class="input-wrapper">
+            <textarea
+              id="messageInput"
+              class="message-input"
+              placeholder="Ask me anything about your studies..."
+              rows="1"
+            ></textarea>
+            <button class="send-btn" id="sendBtn">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const messagesContainer = document.getElementById("messages");
+      const messageInput = document.getElementById("messageInput");
+      const sendBtn = document.getElementById("sendBtn");
+      const typingIndicator = document.getElementById("typingIndicator");
+
+      let isTyping = false;
+      let messageCount = 0;
+
+      // Auto-resize textarea
+      messageInput.addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = Math.min(this.scrollHeight, 120) + "px";
+
+        sendBtn.disabled = this.value.trim() === "";
+      });
+
+      // Send message on Enter (but allow Shift+Enter for new line)
+      messageInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      sendBtn.addEventListener("click", sendMessage);
+
+      function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message || isTyping) return;
+
+        addMessage(message, "user");
+        messageInput.value = "";
+        messageInput.style.height = "auto";
+        sendBtn.disabled = true;
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        // Simulate AI response
+        setTimeout(() => {
+          hideTypingIndicator();
+          const response = generateAIResponse(message);
+          addMessage(response, "bot");
+        }, 1000 + Math.random() * 2000);
+      }
+
+      function sendQuickMessage(message) {
+        messageInput.value = message;
+        sendMessage();
+      }
+
+      function addMessage(content, sender) {
+        messageCount++;
+
+        // Hide welcome message if it's the first real message
+        if (messageCount === 1) {
+          const welcomeMsg = document.querySelector(".welcome-message");
+          if (welcomeMsg) welcomeMsg.style.display = "none";
+        }
+
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${sender}`;
+
+        const avatar = document.createElement("div");
+        avatar.className = "message-avatar";
+        avatar.innerHTML =
+          sender === "user"
+            ? '<i class="fas fa-user"></i>'
+            : '<i class="fas fa-robot"></i>';
+
+        const messageContent = document.createElement("div");
+        messageContent.className = "message-content";
+        messageContent.innerHTML = formatMessage(content);
+
+        if (sender === "bot") {
+          messageDiv.appendChild(avatar);
+          messageDiv.appendChild(messageContent);
+        } else {
+          messageDiv.appendChild(messageContent);
+          messageDiv.appendChild(avatar);
+        }
+
+        messagesContainer.insertBefore(messageDiv, typingIndicator);
+
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Add real-time effects
+        if (sender === "bot") {
+          addTypingEffect(messageContent);
+        }
+      }
+
+      function formatMessage(content) {
+        // Simple markdown-like formatting
+        content = content.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        content = content.replace(/\*(.*?)\*/g, "<em>$1</em>");
+        content = content.replace(
+          /`(.*?)`/g,
+          '<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">$1</code>'
+        );
+
+        // Convert line breaks
+        content = content.replace(/\n/g, "<br>");
+
+        return content;
+      }
+
+      function addTypingEffect(element) {
+        const text = element.textContent;
+        element.innerHTML = "";
+
+        let i = 0;
+        const typingInterval = setInterval(() => {
+          if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          } else {
+            clearInterval(typingInterval);
+            element.innerHTML = formatMessage(text);
+          }
+        }, 20);
+      }
+
+      function showTypingIndicator() {
+        isTyping = true;
+        typingIndicator.style.display = "flex";
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      function hideTypingIndicator() {
+        isTyping = false;
+        typingIndicator.style.display = "none";
+      }
+
+      function generateAIResponse(userMessage) {
+        const responses = {
+          photosynthesis:
+            "🌱 **Photosynthesis** is the process by which plants convert light energy into chemical energy!\n\n**The equation:** 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂\n\n**Key points:**\n• Occurs in chloroplasts\n• Requires sunlight, water, and CO₂\n• Produces glucose and oxygen\n• Essential for life on Earth\n\nWould you like me to explain any specific part in more detail?",
+
+          calculus:
+            "📊 **Calculus Derivatives** measure the rate of change!\n\n**Basic rules:**\n• Power rule: d/dx(xⁿ) = nxⁿ⁻¹\n• Product rule: d/dx(uv) = u'v + uv'\n• Chain rule: d/dx(f(g(x))) = f'(g(x)) × g'(x)\n\n**Example:** d/dx(x²) = 2x\n\nDerivatives help us find:\n• Slopes of curves\n• Maximum/minimum points\n• Rates of change\n\nNeed help with a specific derivative problem?",
+
+          essay:
+            "✍️ **Essay Writing Tips:**\n\n**Structure:**\n1. **Introduction** - Hook, context, thesis\n2. **Body paragraphs** - Topic sentence, evidence, analysis\n3. **Conclusion** - Restate thesis, synthesize ideas\n\n**Writing process:**\n• Brainstorm and outline first\n• Write a strong thesis statement\n• Use transitions between paragraphs\n• Cite your sources properly\n• Revise and edit multiple times\n\nWhat type of essay are you working on?",
+
+          study:
+            "📚 **Effective Study Tips:**\n\n**Techniques that work:**\n• **Pomodoro Technique** - 25 min study, 5 min break\n• **Active recall** - Test yourself regularly\n• **Spaced repetition** - Review at increasing intervals\n• **Feynman Technique** - Explain concepts simply\n\n**Environment:**\n• Find a quiet, dedicated space\n• Minimize distractions\n• Use good lighting\n• Take regular breaks\n\nWhat subject are you studying for?",
+        };
+
+        // Check for keywords and return appropriate response
+        const lowerMessage = userMessage.toLowerCase();
+
+        if (lowerMessage.includes("photosynthesis"))
+          return responses.photosynthesis;
+        if (
+          lowerMessage.includes("calculus") ||
+          lowerMessage.includes("derivative")
+        )
+          return responses.calculus;
+        if (lowerMessage.includes("essay") || lowerMessage.includes("writing"))
+          return responses.essay;
+        if (
+          lowerMessage.includes("study") ||
+          lowerMessage.includes("tip") ||
+          lowerMessage.includes("exam")
+        )
+          return responses.study;
+
+        // General responses
+        const generalResponses = [
+          `Great question! I'd be happy to help you with **${userMessage}**. Could you provide a bit more context about what specifically you'd like to know?`,
+
+          `That's an interesting topic! For **${userMessage}**, I recommend:\n\n• Breaking it down into smaller parts\n• Looking for real-world examples\n• Practicing with similar problems\n\nWhat aspect would you like to focus on first?`,
+
+          `I can definitely help with that! **${userMessage}** is a topic that many students find challenging. \n\nLet me know:\n• What level are you studying at?\n• What specific part is confusing?\n• Do you have any particular examples?`,
+
+          `Excellent question about **${userMessage}**! Here's how I'd approach this:\n\n1. First, let's identify the key concepts\n2. Then we'll break it down step by step\n3. Finally, we'll practice with examples\n\nWhere would you like to start?`,
+        ];
+
+        return generalResponses[
+          Math.floor(Math.random() * generalResponses.length)
+        ];
+      }
+
+      // Real-time features
+      setInterval(() => {
+        // Update online status with subtle animation
+        const statusDot = document.querySelector(".status-dot");
+        statusDot.style.transform = "scale(1.2)";
+        setTimeout(() => {
+          statusDot.style.transform = "scale(1)";
+        }, 300);
+      }, 5000);
+
+      // Initialize
+      sendBtn.disabled = true;
+
+      // Add some initial dynamic content
+      setTimeout(() => {
+        const quickActions = document.querySelectorAll(".quick-btn");
+        quickActions.forEach((btn, index) => {
+          setTimeout(() => {
+            btn.style.opacity = "0";
+            btn.style.transform = "translateY(-5px)";
+            btn.style.transition = "all 0.3s ease";
+            setTimeout(() => {
+              btn.style.opacity = "1";
+              btn.style.transform = "translateY(0)";
+            }, 100);
+          }, index * 100);
+        });
+      }, 1000);
+    </script>
+  </body>
+</html>

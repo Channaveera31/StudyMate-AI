@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activities - StudyMate AI</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --primary-solid: #667eea;
+        --secondary: #f8fafc;
+        --accent: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--primary);
+        min-height: 100vh;
+        color: var(--text-primary);
+      }
+
+      .navbar {
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .back-btn {
+        background: var(--glass);
+        color: white;
+        border: 1px solid var(--glass-border);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: white;
+      }
+
+      .page-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff, #e0e7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .stats-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .stat-card {
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        color: white;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .activities-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .activities-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border);
+      }
+
+      .activities-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .filter-controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--border);
+        background: white;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .filter-btn.active {
+        background: var(--primary-solid);
+        color: white;
+        border-color: var(--primary-solid);
+      }
+
+      .filter-btn:hover {
+        border-color: var(--primary-solid);
+        color: var(--primary-solid);
+      }
+
+      .activities-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .activity-item {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .activity-item::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--primary);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+      }
+
+      .activity-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      .activity-item:hover::before {
+        transform: scaleY(1);
+      }
+
+      .activity-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+      }
+
+      .activity-icon {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+      }
+
+      .activity-info {
+        flex: 1;
+      }
+
+      .activity-type {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .activity-description {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .activity-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      .activity-time {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .activity-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-completed {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .status-in-progress {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+      }
+
+      .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+      }
+
+      .pagination-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border);
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .pagination-btn:hover,
+      .pagination-btn.active {
+        background: var(--primary-solid);
+        color: white;
+        border-color: var(--primary-solid);
+      }
+
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--border);
+        border-top: 4px solid var(--primary-solid);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        .activities-header {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: stretch;
+        }
+
+        .filter-controls {
+          justify-content: center;
+        }
+
+        .activity-header {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .activity-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+
+        .stats-overview {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-content">
+        <a class="logo" href="dashboard.html"> 📚 StudyMate AI </a>
+        <a href="dashboard.html" class="back-btn"> ← Dashboard </a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="page-header fade-in">
+        <h1>📊 Activity Dashboard</h1>
+        <p>Track your learning journey and study patterns</p>
+      </div>
+
+      <div class="stats-overview fade-in">
+        <div class="stat-card">
+          <div class="stat-value" id="totalActivities">0</div>
+          <div class="stat-label">Total Activities</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="todayActivities">0</div>
+          <div class="stat-label">Today's Activities</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="weekActivities">0</div>
+          <div class="stat-label">This Week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="averageDaily">0</div>
+          <div class="stat-label">Daily Average</div>
+        </div>
+      </div>
+
+      <div class="activities-container fade-in">
+        <div class="activities-header">
+          <h2 class="activities-title">Recent Activities</h2>
+          <div class="filter-controls">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="study">Study</button>
+            <button class="filter-btn" data-filter="quiz">Quiz</button>
+            <button class="filter-btn" data-filter="scan">Scan</button>
+            <button class="filter-btn" data-filter="system">System</button>
+          </div>
+        </div>
+
+        <div id="activitiesContainer">
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
+
+        <div class="pagination" id="pagination" style="display: none">
+          <!-- Pagination buttons will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Mock activity data - in a real app, this would come from an API
+      const mockActivities = [
+        {
+          id: 1,
+          type: "Quiz Completed",
+          description: "Mathematics - Calculus Practice Quiz",
+          timestamp: Date.now() - 1000 * 60 * 30, // 30 minutes ago
+          category: "quiz",
+          status: "completed",
+          score: 85,
+          duration: "15 min",
+        },
+        {
+          id: 2,
+          type: "Document Scanned",
+          description: "Physics Chapter 7 - Thermodynamics",
+          timestamp: Date.now() - 1000 * 60 * 60 * 2, // 2 hours ago
+          category: "scan",
+          status: "completed",
+          pages: 5,
+        },
+        {
+          id: 3,
+          type: "Study Session",
+          description: "Biology - Cell Structure and Function",
+          timestamp: Date.now() - 1000 * 60 * 60 * 4, // 4 hours ago
+          category: "study",
+          status: "completed",
+          duration: "45 min",
+        },
+        {
+          id: 4,
+          type: "Flashcards Created",
+          description: "Chemistry - Organic Compounds",
+          timestamp: Date.now() - 1000 * 60 * 60 * 6, // 6 hours ago
+          category: "study",
+          status: "completed",
+          count: 12,
+        },
+        {
+          id: 5,
+          type: "Profile Updated",
+          description: "Changed study preferences and goals",
+          timestamp: Date.now() - 1000 * 60 * 60 * 24, // 1 day ago
+          category: "system",
+          status: "completed",
+        },
+        {
+          id: 6,
+          type: "Quiz Started",
+          description: "History - World War II",
+          timestamp: Date.now() - 1000 * 60 * 60 * 24 * 2, // 2 days ago
+          category: "quiz",
+          status: "in-progress",
+          progress: 60,
+        },
+        {
+          id: 7,
+          type: "Study Plan Created",
+          description: "Final Exams Preparation Schedule",
+          timestamp: Date.now() - 1000 * 60 * 60 * 24 * 3, // 3 days ago
+          category: "study",
+          status: "completed",
+          duration: "2 weeks",
+        },
+        {
+          id: 8,
+          type: "Password Changed",
+          description: "Account security updated",
+          timestamp: Date.now() - 1000 * 60 * 60 * 24 * 5, // 5 days ago
+          category: "system",
+          status: "completed",
+        },
+      ];
+
+      let currentFilter = "all";
+      let currentPage = 1;
+      const itemsPerPage = 5;
+
+      // Initialize the page
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeActivities();
+        setupEventListeners();
+        updateStats();
+      });
+
+      function initializeActivities() {
+        // Simulate loading delay
+        setTimeout(() => {
+          renderActivities();
+          setupPagination();
+        }, 1000);
+      }
+
+      function setupEventListeners() {
+        // Filter buttons
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll(".filter-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            currentFilter = this.dataset.filter;
+            currentPage = 1;
+            renderActivities();
+            setupPagination();
+          });
+        });
+      }
+
+      function getFilteredActivities() {
+        if (currentFilter === "all") {
+          return mockActivities;
+        }
+        return mockActivities.filter(
+          (activity) => activity.category === currentFilter
+        );
+      }
+
+      function renderActivities() {
+        const container = document.getElementById("activitiesContainer");
+        const filteredActivities = getFilteredActivities();
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedActivities = filteredActivities.slice(
+          startIndex,
+          endIndex
+        );
+
+        if (paginatedActivities.length === 0) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>No Activities Found</h3>
+                        <p>No activities match the selected filter. Try selecting a different category.</p>
+                    </div>
+                `;
+          return;
+        }
+
+        const activitiesHTML = paginatedActivities
+          .map((activity) => {
+            const icon = getActivityIcon(activity.category);
+            const statusClass = `status-${activity.status.replace(" ", "-")}`;
+            const timeAgo = formatTimeAgo(activity.timestamp);
+            const details = getActivityDetails(activity);
+
+            return `
+                    <div class="activity-item" onclick="showActivityDetails(${activity.id})">
+                        <div class="activity-header">
+                            <div style="display: flex; align-items: flex-start;">
+                                <div class="activity-icon">${icon}</div>
+                                <div class="activity-info">
+                                    <div class="activity-type">${activity.type}</div>
+                                    <div class="activity-description">${activity.description}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="activity-meta">
+                            <div class="activity-time">
+                                <span>🕐</span>
+                                <span>${timeAgo}</span>
+                            </div>
+                            ${details}
+                            <div class="activity-status ${statusClass}">${activity.status}</div>
+                        </div>
+                    </div>
+                `;
+          })
+          .join("");
+
+        container.innerHTML = `<div class="activities-list">${activitiesHTML}</div>`;
+      }
+
+      function getActivityIcon(category) {
+        const icons = {
+          quiz: "📝",
+          scan: "📷",
+          study: "📚",
+          system: "⚙️",
+        };
+        return icons[category] || "📋";
+      }
+
+      function getActivityDetails(activity) {
+        let details = "";
+        if (activity.score) {
+          details += `<span>Score: ${activity.score}%</span>`;
+        }
+        if (activity.duration) {
+          details += `<span>Duration: ${activity.duration}</span>`;
+        }
+        if (activity.pages) {
+          details += `<span>Pages: ${activity.pages}</span>`;
+        }
+        if (activity.count) {
+          details += `<span>Count: ${activity.count}</span>`;
+        }
+        if (activity.progress) {
+          details += `<span>Progress: ${activity.progress}%</span>`;
+        }
+        return details;
+      }
+
+      function formatTimeAgo(timestamp) {
+        const now = Date.now();
+        const diff = now - timestamp;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) {
+          return days === 1 ? "1 day ago" : `${days} days ago`;
+        } else if (hours > 0) {
+          return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+        } else if (minutes > 0) {
+          return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+        } else {
+          return "Just now";
+        }
+      }
+
+      function setupPagination() {
+        const filteredActivities = getFilteredActivities();
+        const totalPages = Math.ceil(filteredActivities.length / itemsPerPage);
+        const paginationContainer = document.getElementById("pagination");
+
+        if (totalPages <= 1) {
+          paginationContainer.style.display = "none";
+          return;
+        }
+
+        paginationContainer.style.display = "flex";
+
+        let paginationHTML = "";
+
+        // Previous button
+        if (currentPage > 1) {
+          paginationHTML += `<button class="pagination-btn" onclick="changePage(${
+            currentPage - 1
+          })">← Previous</button>`;
+        }
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          const activeClass = i === currentPage ? "active" : "";
+          paginationHTML += `<button class="pagination-btn ${activeClass}" onclick="changePage(${i})">${i}</button>`;
+        }
+
+        // Next button
+        if (currentPage < totalPages) {
+          paginationHTML += `<button class="pagination-btn" onclick="changePage(${
+            currentPage + 1
+          })">Next →</button>`;
+        }
+
+        paginationContainer.innerHTML = paginationHTML;
+      }
+
+      function changePage(page) {
+        currentPage = page;
+        renderActivities();
+        setupPagination();
+
+        // Smooth scroll to top of activities
+        document.querySelector(".activities-container").scrollIntoView({
+          behavior: "smooth",
+        });
+      }
+
+      function updateStats() {
+        const now = Date.now();
+        const today = new Date().setHours(0, 0, 0, 0);
+        const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+
+        const todayActivities = mockActivities.filter(
+          (activity) => activity.timestamp >= today
+        ).length;
+        const weekActivities = mockActivities.filter(
+          (activity) => activity.timestamp >= weekAgo
+        ).length;
+        const averageDaily = Math.round((weekActivities / 7) * 10) / 10;
+
+        // Animate counters
+        animateValue("totalActivities", 0, mockActivities.length, 1000);
+        animateValue("todayActivities", 0, todayActivities, 1200);
+        animateValue("weekActivities", 0, weekActivities, 1400);
+        animateValue("averageDaily", 0, averageDaily, 1600);
+      }
+
+      function animateValue(elementId, start, end, duration) {
+        const element = document.getElementById(elementId);
+        const range = end - start;
+        const startTime = performance.now();
+
+        function updateValue(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const current = start + range * progress;
+
+          if (elementId === "averageDaily") {
+            element.textContent = current.toFixed(1);
+          } else {
+            element.textContent = Math.floor(current);
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(updateValue);
+          }
+        }
+
+        requestAnimationFrame(updateValue);
+      }
+
+      function showActivityDetails(activityId) {
+        const activity = mockActivities.find((a) => a.id === activityId);
+        if (!activity) return;
+
+        const modal = document.createElement("div");
+        modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                backdrop-filter: blur(5px);
+            `;
+
+        const modalContent = `
+                <div style="
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 16px;
+                    box-shadow: var(--shadow-lg);
+                    max-width: 500px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                ">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--text-primary); font-size: 1.5rem; font-weight: 700;">
+                            ${getActivityIcon(activity.category)} ${
+          activity.type
+        }
+                        </h3>
+                        <button onclick="this.closest('.modal').remove()" style="
+                            background: none;
+                            border: none;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            color: var(--text-secondary);
+                        ">×</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Description:</strong>
+                        <p style="color: var(--text-secondary); margin-top: 0.5rem;">${
+                          activity.description
+                        }</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Time:</strong>
+                        <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                            ${new Date(
+                              activity.timestamp
+                            ).toLocaleString()} (${formatTimeAgo(
+          activity.timestamp
+        )})
+                        </p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Status:</strong>
+                        <span class="activity-status status-${activity.status.replace(
+                          " ",
+                          "-"
+                        )}" style="margin-left: 0.5rem;">
+                            ${activity.status}
+                        </span>
+                    </div>
+                    
+                    ${
+                      activity.score
+                        ? `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Score:</strong>
+                            <span style="color: var(--success); font-weight: 600; margin-left: 0.5rem;">${activity.score}%</span>
+                        </div>
+                    `
+                        : ""
+                    }
+                    
+                    ${
+                      activity.duration
+                        ? `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Duration:</strong>
+                            <span style="margin-left: 0.5rem;">${activity.duration}</span>
+                        </div>
+                    `
+                        : ""
+                    }
+                    
+                    ${
+                      activity.pages
+                        ? `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Pages Scanned:</strong>
+                            <span style="margin-left: 0.5rem;">${activity.pages}</span>
+                        </div>
+                    `
+                        : ""
+                    }
+                    
+                    ${
+                      activity.count
+                        ? `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Cards Created:</strong>
+                            <span style="margin-left: 0.5rem;">${activity.count}</span>
+                        </div>
+                    `
+                        : ""
+                    }
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: flex-end;">
+                        <button onclick="this.closest('.modal').remove()" style="
+                            padding: 0.75rem 1.5rem;
+                            border: 1px solid var(--border);
+                            background: white;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        ">Close</button>
+                        ${
+                          activity.category === "quiz" &&
+                          activity.status === "completed"
+                            ? `
+                            <button onclick="retakeQuiz(${activity.id})" style="
+                                padding: 0.75rem 1.5rem;
+                                border: none;
+                                background: var(--primary-solid);
+                                color: white;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            ">Retake Quiz</button>
+                        `
+                            : ""
+                        }
+                    </div>
+                </div>
+            `;
+
+        modal.className = "modal";
+        modal.innerHTML = modalContent;
+        document.body.appendChild(modal);
+
+        // Close on backdrop click
+        modal.addEventListener("click", function (e) {
+          if (e.target === modal) {
+            modal.remove();
+          }
+        });
+
+        // Close on Escape key
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            modal.remove();
+          }
+        });
+      }
+
+      function retakeQuiz(activityId) {
+        const activity = mockActivities.find((a) => a.id === activityId);
+        alert(`Redirecting to retake: ${activity.description}`);
+        // In a real app, this would navigate to the quiz
+        document.querySelector(".modal").remove();
+      }
+
+      // Real-time updates simulation
+      setInterval(() => {
+        // Simulate new activities being added
+        if (Math.random() > 0.95) {
+          // 5% chance every 30 seconds
+          const newActivity = {
+            id: mockActivities.length + 1,
+            type: "New Activity",
+            description: "Real-time activity update",
+            timestamp: Date.now(),
+            category: "study",
+            status: "completed",
+          };
+
+          mockActivities.unshift(newActivity);
+          updateStats();
+
+          if (currentFilter === "all" || currentFilter === "study") {
+            renderActivities();
+            setupPagination();
+          }
+
+          // Show notification
+          showNotification("📚 New activity recorded!", "success");
+        }
+      }, 30000);
+
+      function showNotification(message, type) {
+        const notification = document.createElement("div");
+        notification.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: ${type === "success" ? "#10b981" : "#3b82f6"};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                transform: translateX(400px);
+                transition: all 0.4s ease;
+            `;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.style.transform = "translateX(0)";
+        }, 100);
+
+        setTimeout(() => {
+          notification.style.transform = "translateX(400px)";
+          setTimeout(() => notification.remove(), 400);
+        }, 3000);
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", function (e) {
+        if (e.ctrlKey || e.metaKey) {
+          switch (e.key) {
+            case "1":
+              e.preventDefault();
+              document.querySelector('[data-filter="all"]').click();
+              break;
+            case "2":
+              e.preventDefault();
+              document.querySelector('[data-filter="study"]').click();
+              break;
+            case "3":
+              e.preventDefault();
+              document.querySelector('[data-filter="quiz"]').click();
+              break;
+            case "4":
+              e.preventDefault();
+              document.querySelector('[data-filter="scan"]').click();
+              break;
+          }
+        }
+      });
+
+      // Add fade-in animation to elements when they appear
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -100px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements for animation
+      document.querySelectorAll(".activity-item").forEach((el) => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(20px)";
+        el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+        observer.observe(el);
+      });
+    </script>
+  </body>
+</html>

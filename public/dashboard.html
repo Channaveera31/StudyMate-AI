@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - StudyMate AI</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --primary-solid: #667eea;
+        --secondary: #f8fafc;
+        --accent: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--primary);
+        min-height: 100vh;
+        color: var(--text-primary);
+        overflow-x: hidden;
+      }
+
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 1rem 2rem;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .nav-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+      }
+
+      .logo:hover {
+        transform: scale(1.05);
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .progress-wrap {
+        width: 200px;
+        height: 8px;
+        background: var(--glass);
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981, #3b82f6);
+        border-radius: 4px;
+        width: 75%;
+        transition: width 0.5s ease;
+        animation: progress-pulse 2s infinite;
+      }
+
+      @keyframes progress-pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      .user-info {
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+
+      .profile-dropdown {
+        position: relative;
+      }
+
+      .profile-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--glass);
+        color: white;
+        border: 1px solid var(--glass-border);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: all 0.3s ease;
+      }
+
+      .profile-btn:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 110%;
+        right: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        padding: 0.5rem;
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1001;
+      }
+
+      .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+
+      .dropdown-item:hover {
+        background: var(--secondary);
+        color: var(--primary-solid);
+        transform: translateX(5px);
+      }
+
+      .main-content {
+        margin-top: 80px;
+        padding: 2rem;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .welcome-section {
+        text-align: center;
+        margin-bottom: 4rem;
+        color: white;
+        animation: fadeInUp 1s ease;
+      }
+
+      .welcome-section h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff, #e0e7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+      }
+
+      .welcome-section p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        animation: fadeInUp 1s ease 0.2s both;
+      }
+
+      .stat-card {
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        color: white;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .stat-card:hover:before {
+        left: 100%;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .feature-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .feature-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feature-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover .feature-icon {
+        transform: scale(1.2) rotate(5deg);
+      }
+
+      .feature-card h3 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+
+      /* Recent Activities Section */
+      .recent-activities {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: var(--shadow);
+      }
+
+      .activities-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .activities-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .view-all-btn {
+        background: var(--primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+      }
+
+      .view-all-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .activities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .activity-card {
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .activity-card:hover {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .activity-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+        background: var(--primary);
+      }
+
+      .activity-info h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .activity-time {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .activity-description {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
+
+      .activity-preview {
+        margin-top: 0.75rem;
+        border-radius: 8px;
+        overflow: hidden;
+        max-height: 100px;
+      }
+
+      .activity-preview img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        transition: all 0.3s ease;
+      }
+
+      .activity-preview:hover img {
+        transform: scale(1.05);
+      }
+
+      .no-activities {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--text-secondary);
+      }
+
+      .no-activities-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      .quick-actions {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeInUp 1s ease 0.4s both;
+      }
+
+      .quick-btn {
+        background: var(--glass);
+        color: white;
+        border: 1px solid var(--glass-border);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 0.95rem;
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .quick-btn:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .quick-btn:hover:before {
+        left: 100%;
+      }
+
+      .quick-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow);
+      }
+
+      .online-indicator {
+        position: fixed;
+        bottom: 2rem;
+        left: 2rem;
+        background: var(--success);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 1000;
+        animation: slideUp 0.5s ease;
+      }
+
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.7;
+        }
+      }
+
+      .notification {
+        position: fixed;
+        top: 100px;
+        right: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateX(400px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-lg);
+        max-width: 350px;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+
+      .notification.success {
+        background: var(--success);
+      }
+      .notification.error {
+        background: var(--error);
+      }
+      .notification.warning {
+        background: var(--warning);
+      }
+      .notification.info {
+        background: var(--accent);
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid var(--primary-solid);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .real-time-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        background: var(--success);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .welcome-section h1 {
+          font-size: 2.5rem;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .feature-card {
+          padding: 2rem;
+        }
+
+        .nav-content {
+          padding: 0 1rem;
+        }
+
+        .progress-wrap {
+          width: 120px;
+        }
+
+        .activities-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .main-content {
+          padding: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .quick-actions {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-content">
+        <a class="logo" href="dashboard.html">
+          <i class="fas fa-graduation-cap"></i>
+          StudyMate AI
+        </a>
+        <div class="nav-actions">
+          <div class="progress-container">
+            <span class="user-info">Study Progress</span>
+            <div class="progress-wrap">
+              <div
+                class="progress-bar"
+                id="studyProgress"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
+          </div>
+          <span class="user-info"
+            >Welcome, <span id="userName">Student</span>!</span
+          >
+          <div class="profile-dropdown">
+            <button class="profile-btn" id="profileBtn">
+              <i class="fas fa-user"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <a class="dropdown-item" href="profile.html">
+                <i class="fas fa-user-circle"></i>
+                My Profile
+              </a>
+              <a class="dropdown-item" href="change-password.html">
+                <i class="fas fa-lock"></i>
+                Change Password
+              </a>
+              <a class="dropdown-item" href="activities.html">
+                <i class="fas fa-chart-line"></i>
+                Activities
+              </a>
+              <hr
+                style="
+                  margin: 0.5rem 0;
+                  border: none;
+                  border-top: 1px solid var(--border);
+                "
+              />
+              <button class="dropdown-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <section class="welcome-section">
+        <h1>Your AI Study Companion</h1>
+        <p>
+          Transform your learning experience with intelligent tools, real-time
+          progress tracking, and personalized study plans
+          <span class="real-time-badge">
+            <div class="pulse-dot"></div>
+            REAL-TIME
+          </span>
+        </p>
+      </section>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="studyHours">12.5</div>
+          <div class="stat-label">Study Hours Today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="completedTasks">8</div>
+          <div class="stat-label">Tasks Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="streak">15</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="averageScore">87%</div>
+          <div class="stat-label">Average Score</div>
+        </div>
+      </div>
+
+      <!-- Recent Activities Section -->
+      <div class="recent-activities">
+        <div class="activities-header">
+          <h2 class="activities-title">
+            <i class="fas fa-history"></i>
+            Recent Activities
+            <span class="real-time-badge">
+              <div class="pulse-dot"></div>
+              LIVE
+            </span>
+          </h2>
+          <button class="view-all-btn" onclick="navigateTo('activities.html')">
+            <i class="fas fa-external-link-alt"></i>
+            View All
+          </button>
+        </div>
+        <div class="activities-grid" id="activitiesContainer">
+          <div class="no-activities">
+            <div class="no-activities-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <p>
+              No recent activities. Start using StudyMate to see your progress
+              here!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card" onclick="navigateTo('scanner.html')">
+          <span class="feature-icon">📷</span>
+          <h3>Smart Scanner</h3>
+          <p>
+            Upload or capture notes and get AI-powered summaries with real-time
+            processing and OCR technology
+          </p>
+        </div>
+        <div class="feature-card" onclick="navigateTo('flashcards.html')">
+          <span class="feature-icon">🧠</span>
+          <h3>AI Flashcards</h3>
+          <p>
+            Auto-generate intelligent flashcards from your study materials with
+            spaced repetition algorithms
+          </p>
+        </div>
+        <div class="feature-card" onclick="navigateTo('quiz.html')">
+          <span class="feature-icon">📝</span>
+          <h3>Smart Quizzes</h3>
+          <p>
+            Practice with AI-generated questions tailored to your learning style
+            and difficulty preferences
+          </p>
+        </div>
+        <div class="feature-card" onclick="navigateTo('planner.html')">
+          <span class="feature-icon">📅</span>
+          <h3>Study Planner</h3>
+          <p>
+            Get personalized study schedules based on your exam dates, goals,
+            and learning patterns
+          </p>
+        </div>
+        <div class="feature-card" onclick="navigateTo('qa.html')">
+          <span class="feature-icon">💬</span>
+          <h3>Q&A Community</h3>
+          <p>
+            Join collaborative study sessions, ask questions, and help others in
+            real-time discussions
+          </p>
+        </div>
+        <div class="feature-card" onclick="navigateTo('chatbot.html')">
+          <span class="feature-icon">🤖</span>
+          <h3>AI Assistant</h3>
+          <p>
+            Get instant help with any study question, concept explanation, or
+            learning guidance 24/7
+          </p>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <button class="quick-btn" onclick="navigateTo('schedule.html')">
+          <i class="fas fa-calendar"></i>
+          View Schedule
+        </button>
+        <button class="quick-btn" onclick="openQuickScan()">
+          <i class="fas fa-bolt"></i>
+          Quick Scan
+        </button>
+        <button class="quick-btn" onclick="startStudySession()">
+          <i class="fas fa-play"></i>
+          Start Session
+        </button>
+        <button class="quick-btn" onclick="viewProgress()">
+          <i class="fas fa-chart-line"></i>
+          Progress Report
+        </button>
+      </div>
+    </main>
+
+    <!-- Real-time Status Indicator -->
+    <div class="online-indicator" id="onlineStatus">
+      <div class="pulse-dot"></div>
+      <span>System Online</span>
+    </div>
+
+    <script>
+      // Global StudyMate object for real-time data management
+      window.SM = window.SM || {
+        activities: JSON.parse(localStorage.getItem("sm_activities") || "[]"),
+        uploads: JSON.parse(localStorage.getItem("sm_uploads") || "[]"),
+
+        addActivity: function (activity) {
+          activity.id = Date.now() + Math.random();
+          activity.timestamp = activity.timestamp || Date.now();
+          this.activities.unshift(activity);
+
+          // Keep only latest 50 activities
+          if (this.activities.length > 50) {
+            this.activities = this.activities.slice(0, 50);
+          }
+
+          localStorage.setItem(
+            "sm_activities",
+            JSON.stringify(this.activities)
+          );
+          this.broadcastUpdate("activity", activity);
+          this.updateActivitiesDisplay();
+        },
+
+        addUpload: function (upload) {
+          upload.id = Date.now() + Math.random();
+          upload.timestamp = upload.timestamp || Date.now();
+          this.uploads.unshift(upload);
+
+          // Keep only latest 20 uploads
+          if (this.uploads.length > 20) {
+            this.uploads = this.uploads.slice(0, 20);
+          }
+
+          localStorage.setItem("sm_uploads", JSON.stringify(this.uploads));
+          this.broadcastUpdate("upload", upload);
+        },
+
+        broadcastUpdate: function (type, data) {
+          localStorage.setItem(
+            "sm_realtime_update",
+            JSON.stringify({
+              type,
+              data,
+              timestamp: Date.now(),
+            })
+          );
+        },
+
+        updateActivitiesDisplay: function () {
+          updateRecentActivities();
+        },
+      };
+
+      // Global variables
+      let userName = localStorage.getItem("userName") || "Student";
+      let studySessionActive = JSON.parse(
+        localStorage.getItem("studySessionActive") || "false"
+      );
+      let realTimeUpdateInterval;
+      let lastActivityCheck = Date.now();
+
+      // Initialize on DOM load
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeDashboard();
+        setupEventListeners();
+        startRealTimeUpdates();
+        loadRecentActivities();
+      });
+
+      function initializeDashboard() {
+        document.getElementById("userName").textContent = userName;
+        updateStudyStats();
+        checkNotifications();
+
+        // Add some sample activities if none exist
+        if (window.SM.activities.length === 0) {
+          addSampleActivities();
+        }
+      }
+
+      function addSampleActivities() {
+        const sampleActivities = [
+          {
+            type: "login",
+            title: "Welcome back!",
+            description: "You logged in to StudyMate AI",
+            icon: "fas fa-sign-in-alt",
+            timestamp: Date.now() - 300000, // 5 minutes ago
+          },
+          {
+            type: "dashboard_visit",
+            title: "Dashboard accessed",
+            description: "Viewing your study dashboard",
+            icon: "fas fa-tachometer-alt",
+            timestamp: Date.now() - 60000, // 1 minute ago
+          },
+        ];
+
+        sampleActivities.forEach((activity) => {
+          window.SM.addActivity(activity);
+        });
+      }
+
+      function setupEventListeners() {
+        // Profile dropdown
+        const profileBtn = document.getElementById("profileBtn");
+        const dropdownMenu = document.getElementById("dropdownMenu");
+
+        profileBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle("show");
+        });
+
+        document.addEventListener("click", function () {
+          dropdownMenu.classList.remove("show");
+        });
+
+        // Real-time storage listener
+        window.addEventListener("storage", function (e) {
+          if (e.key === "sm_realtime_update") {
+            const update = JSON.parse(e.newValue);
+            handleRealTimeUpdate(update);
+          }
+        });
+
+        // Page visibility API
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) {
+            // Page became visible, refresh data
+            loadRecentActivities();
+            updateStudyStats();
+          }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener("keydown", function (e) {
+          if (e.ctrlKey && e.key === "/") {
+            e.preventDefault();
+            navigateTo("chatbot.html");
+          }
+        });
+      }
+
+      function handleRealTimeUpdate(update) {
+        switch (update.type) {
+          case "activity":
+            updateRecentActivities();
+            showNotification(`📊 New activity: ${update.data.title}`, "info");
+            break;
+          case "upload":
+            updateRecentActivities();
+            showNotification(
+              `📁 File uploaded: ${update.data.fileName}`,
+              "success"
+            );
+            break;
+        }
+      }
+
+      function startRealTimeUpdates() {
+        // Update stats every 30 seconds
+        realTimeUpdateInterval = setInterval(() => {
+          updateStudyStats();
+          updateProgressBar();
+          checkNotifications();
+          updateOnlineStatus();
+        }, 30000);
+
+        // Initial progress bar animation
+        setTimeout(updateProgressBar, 1000);
+      }
+
+      function updateOnlineStatus() {
+        const statusEl = document.getElementById("onlineStatus");
+        const now = new Date();
+        statusEl.innerHTML = `
+          <div class="pulse-dot"></div>
+          <span>Online • ${now.toLocaleTimeString()}</span>
+        `;
+      }
+
+      function loadRecentActivities() {
+        updateRecentActivities();
+      }
+
+      function updateRecentActivities() {
+        const container = document.getElementById("activitiesContainer");
+        const activities = window.SM.activities.slice(0, 6); // Show latest 6 activities
+
+        if (activities.length === 0) {
+          container.innerHTML = `
+            <div class="no-activities">
+              <div class="no-activities-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <p>No recent activities. Start using StudyMate to see your progress here!</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = activities
+          .map((activity) => createActivityCard(activity))
+          .join("");
+      }
+
+      function createActivityCard(activity) {
+        const timeAgo = getTimeAgo(activity.timestamp);
+        const iconClass = activity.icon || "fas fa-circle";
+
+        // Check if activity has associated upload/image
+        const upload = window.SM.uploads.find(
+          (u) => u.activityId === activity.id
+        );
+        const previewHTML = upload
+          ? `
+          <div class="activity-preview">
+            <img src="${upload.url}" alt="${upload.fileName}" onclick="openImageModal('${upload.url}', '${upload.fileName}')">
+          </div>
+        `
+          : "";
+
+        return `
+          <div class="activity-card" onclick="viewActivityDetails('${
+            activity.id
+          }')">
+            <div class="activity-header">
+              <div class="activity-icon">
+                <i class="${iconClass}"></i>
+              </div>
+              <div class="activity-info">
+                <h4>${activity.title || activity.type}</h4>
+                <span class="activity-time">${timeAgo}</span>
+              </div>
+            </div>
+            <p class="activity-description">${activity.description}</p>
+            ${previewHTML}
+          </div>
+        `;
+      }
+
+      function getTimeAgo(timestamp) {
+        const now = Date.now();
+        const diff = now - timestamp;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+
+        if (minutes < 1) return "Just now";
+        if (minutes < 60) return `${minutes}m ago`;
+        if (hours < 24) return `${hours}h ago`;
+        return `${days}d ago`;
+      }
+
+      function viewActivityDetails(activityId) {
+        const activity = window.SM.activities.find((a) => a.id == activityId);
+        if (!activity) return;
+
+        // Add activity view tracking
+        window.SM.addActivity({
+          type: "activity_viewed",
+          title: "Activity Details Viewed",
+          description: `Viewed details for: ${activity.title}`,
+          icon: "fas fa-eye",
+          parentId: activityId,
+        });
+
+        showNotification(`📋 Viewing: ${activity.title}`, "info");
+      }
+
+      function openImageModal(imageUrl, fileName) {
+        const modal = document.createElement("div");
+        modal.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.8);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          cursor: pointer;
+        `;
+
+        modal.innerHTML = `
+          <div style="max-width: 90%; max-height: 90%; position: relative;">
+            <img src="${imageUrl}" alt="${fileName}" style="max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+            <div style="position: absolute; top: -40px; left: 0; color: white; font-weight: 600;">${fileName}</div>
+            <button style="position: absolute; top: -40px; right: 0; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem;">×</button>
+          </div>
+        `;
+
+        modal.addEventListener("click", () => modal.remove());
+        document.body.appendChild(modal);
+      }
+
+      function updateStudyStats() {
+        const stats = {
+          studyHours: (12.5 + Math.random() * 0.5).toFixed(1),
+          completedTasks: 8 + Math.floor(Math.random() * 3),
+          streak: 15 + Math.floor(Math.random() * 2),
+          averageScore: (85 + Math.random() * 10).toFixed(0) + "%",
+        };
+
+        Object.keys(stats).forEach((key) => {
+          const element = document.getElementById(key);
+          if (element) {
+            animateValue(element, element.textContent, stats[key], 1000);
+          }
+        });
+      }
+
+      function updateProgressBar() {
+        const progressBar = document.getElementById("studyProgress");
+        const currentWidth = parseInt(progressBar.style.width) || 75;
+        const newWidth = Math.min(currentWidth + Math.random() * 5, 100);
+        progressBar.style.width = newWidth + "%";
+      }
+
+      function animateValue(element, start, end, duration) {
+        const startValue = parseFloat(start) || 0;
+        const endValue = parseFloat(end) || 0;
+        const range = endValue - startValue;
+        const startTime = performance.now();
+
+        function updateValue(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const current = startValue + range * progress;
+
+          element.textContent =
+            typeof end === "string" && end.includes("%")
+              ? Math.round(current) + "%"
+              : current.toFixed(1);
+
+          if (progress < 1) {
+            requestAnimationFrame(updateValue);
+          }
+        }
+
+        requestAnimationFrame(updateValue);
+      }
+
+      function navigateTo(page) {
+        // Track navigation
+        window.SM.addActivity({
+          type: "navigation",
+          title: `Navigated to ${page}`,
+          description: `User accessed ${page
+            .replace(".html", "")
+            .replace("-", " ")}`,
+          icon: "fas fa-mouse-pointer",
+        });
+
+        showNotification("Loading...", "info");
+        document.body.style.transition = "opacity 0.3s ease";
+        document.body.style.opacity = "0.7";
+
+        setTimeout(() => {
+          window.location.href = page;
+        }, 300);
+      }
+
+      function openQuickScan() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*,.pdf";
+        input.multiple = true;
+
+        input.onchange = function (e) {
+          if (e.target.files.length > 0) {
+            showNotification("📷 Processing your scan...", "info");
+
+            Array.from(e.target.files).forEach((file) => {
+              // Simulate upload to ImageKit
+              setTimeout(() => {
+                const mockUrl = URL.createObjectURL(file);
+
+                // Add upload record
+                window.SM.addUpload({
+                  fileName: file.name,
+                  fileSize: file.size,
+                  fileType: file.type,
+                  url: mockUrl,
+                  source: "quick_scan",
+                });
+
+                // Add activity
+                window.SM.addActivity({
+                  type: "file_upload",
+                  title: "Quick Scan Complete",
+                  description: `Uploaded and processed: ${file.name}`,
+                  icon: "fas fa-camera",
+                  fileUrl: mockUrl,
+                });
+              }, 1000 + Math.random() * 1000);
+            });
+
+            setTimeout(() => {
+              showNotification(
+                `✅ Successfully processed ${e.target.files.length} file(s)!`,
+                "success"
+              );
+
+              // Update stats
+              const completedTasks = document.getElementById("completedTasks");
+              const current = parseInt(completedTasks.textContent);
+              animateValue(
+                completedTasks,
+                current,
+                current + e.target.files.length,
+                500
+              );
+            }, 2000);
+          }
+        };
+
+        input.click();
+      }
+
+      function startStudySession() {
+        if (studySessionActive) {
+          showNotification(
+            "⏸️ Study session paused. Take a well-deserved break!",
+            "warning"
+          );
+          studySessionActive = false;
+          localStorage.setItem("studySessionActive", "false");
+          document.querySelector(".quick-btn:nth-child(3)").innerHTML =
+            '<i class="fas fa-play"></i> Start Session';
+
+          window.SM.addActivity({
+            type: "session_end",
+            title: "Study Session Ended",
+            description: "Study session was paused",
+            icon: "fas fa-pause",
+          });
+        } else {
+          showNotification(
+            "🎯 Study session started! Focus mode activated.",
+            "success"
+          );
+          studySessionActive = true;
+          localStorage.setItem("studySessionActive", "true");
+          document.querySelector(".quick-btn:nth-child(3)").innerHTML =
+            '<i class="fas fa-pause"></i> End Session';
+
+          window.SM.addActivity({
+            type: "session_start",
+            title: "Study Session Started",
+            description: "Focus mode activated",
+            icon: "fas fa-play",
+          });
+
+          // Update study hours in real-time during session
+          const sessionInterval = setInterval(() => {
+            if (!studySessionActive) {
+              clearInterval(sessionInterval);
+              return;
+            }
+
+            const studyHours = document.getElementById("studyHours");
+            const current = parseFloat(studyHours.textContent);
+            animateValue(studyHours, current, current + 0.1, 300);
+          }, 60000); // Update every minute
+        }
+      }
+
+      function viewProgress() {
+        window.SM.addActivity({
+          type: "progress_view",
+          title: "Progress Report Accessed",
+          description: "Viewed detailed progress analytics",
+          icon: "fas fa-chart-line",
+        });
+
+        showNotification("📈 Generating detailed progress report...", "info");
+        setTimeout(() => {
+          navigateTo("progress.html");
+        }, 1000);
+      }
+
+      function checkNotifications() {
+        const notifications = [
+          {
+            message: "📚 Don't forget your Math quiz tomorrow at 2 PM!",
+            type: "warning",
+          },
+          {
+            message: "🎯 Excellent work! You completed 3 study sessions today.",
+            type: "success",
+          },
+          {
+            message: "⏰ Physics exam in 5 days - time to review Chapter 7-9!",
+            type: "info",
+          },
+          {
+            message: "🔥 15-day streak! You're on fire! Keep it up!",
+            type: "success",
+          },
+          {
+            message: "📝 New flashcards are ready for review in Biology.",
+            type: "info",
+          },
+        ];
+
+        if (Math.random() > 0.85) {
+          const randomNotification =
+            notifications[Math.floor(Math.random() * notifications.length)];
+          setTimeout(() => {
+            showNotification(
+              randomNotification.message,
+              randomNotification.type
+            );
+          }, Math.random() * 5000);
+        }
+      }
+
+      function showNotification(message, type = "info") {
+        // Remove existing notification
+        const existingNotification = document.querySelector(".notification");
+        if (existingNotification) {
+          existingNotification.remove();
+        }
+
+        const notification = document.createElement("div");
+        notification.className = `notification ${type}`;
+        notification.innerHTML = message;
+
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+          notification.classList.add("show");
+        }, 100);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          notification.classList.remove("show");
+          setTimeout(() => notification.remove(), 400);
+        }, 5000);
+      }
+
+      function logout() {
+        if (confirm("Are you sure you want to logout?")) {
+          window.SM.addActivity({
+            type: "logout",
+            title: "User Logged Out",
+            description: "Session ended successfully",
+            icon: "fas fa-sign-out-alt",
+          });
+
+          showNotification("👋 Logging out... See you soon!", "info");
+
+          // Clear intervals
+          if (realTimeUpdateInterval) {
+            clearInterval(realTimeUpdateInterval);
+          }
+
+          // Clear session data but keep activities and uploads
+          setTimeout(() => {
+            sessionStorage.clear();
+            localStorage.removeItem("studySessionActive");
+            window.location.href = "login.html";
+          }, 1500);
+        }
+      }
+
+      // Page visibility API for real-time updates
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          // Pause updates when page is not visible
+          if (realTimeUpdateInterval) {
+            clearInterval(realTimeUpdateInterval);
+          }
+        } else {
+          // Resume updates when page becomes visible
+          startRealTimeUpdates();
+          updateStudyStats();
+          loadRecentActivities();
+        }
+      });
+
+      // Network status monitoring
+      window.addEventListener("online", () => {
+        showNotification("🌐 Connection restored - syncing data...", "success");
+        updateOnlineStatus();
+        loadRecentActivities();
+      });
+
+      window.addEventListener("offline", () => {
+        showNotification(
+          "⚠️ Working offline - data will sync when connected",
+          "warning"
+        );
+        document.getElementById("onlineStatus").innerHTML = `
+          <div style="background: #f59e0b; width: 8px; height: 8px; border-radius: 50%;"></div>
+          <span>Offline Mode</span>
+        `;
+      });
+
+      // Initialize tooltips and other interactive elements
+      function initializeTooltips() {
+        const cards = document.querySelectorAll(".feature-card");
+        cards.forEach((card) => {
+          card.addEventListener("mouseenter", function () {
+            this.style.transform = "translateY(-12px) scale(1.02)";
+          });
+
+          card.addEventListener("mouseleave", function () {
+            this.style.transform = "translateY(0) scale(1)";
+          });
+        });
+      }
+
+      // Keyboard accessibility
+      document.addEventListener("keydown", function (e) {
+        // Quick navigation shortcuts
+        if (e.altKey) {
+          switch (e.key) {
+            case "1":
+              e.preventDefault();
+              navigateTo("scanner.html");
+              break;
+            case "2":
+              e.preventDefault();
+              navigateTo("flashcards.html");
+              break;
+            case "3":
+              e.preventDefault();
+              navigateTo("quiz.html");
+              break;
+            case "4":
+              e.preventDefault();
+              navigateTo("planner.html");
+              break;
+            case "5":
+              e.preventDefault();
+              navigateTo("qa.html");
+              break;
+            case "6":
+              e.preventDefault();
+              navigateTo("chatbot.html");
+              break;
+          }
+        }
+      });
+
+      // Auto-save user preferences
+      setInterval(() => {
+        localStorage.setItem("lastVisit", Date.now());
+        localStorage.setItem("userName", userName);
+      }, 30000);
+
+      // Initialize everything
+      initializeTooltips();
+
+      // Welcome back message for returning users
+      const lastVisit = localStorage.getItem("lastVisit");
+      if (lastVisit) {
+        const timeSinceLastVisit = Date.now() - parseInt(lastVisit);
+        if (timeSinceLastVisit > 3600000) {
+          // More than 1 hour
+          setTimeout(() => {
+            showNotification(
+              `👋 Welcome back! You were away for ${Math.floor(
+                timeSinceLastVisit / 3600000
+              )} hours.`,
+              "info"
+            );
+          }, 2000);
+        }
+      }
+    </script>
+    <script type="module" src="js/dashboard-loader.js"></script>
+  </body>
+</html>

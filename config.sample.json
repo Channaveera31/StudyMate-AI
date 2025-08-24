@@ -1,0 +1,13 @@
+{
+  "homePage": "index.html",
+  "dashboardPage": "dashboard.html",
+  "imagekit": {
+    "publicKey": "your_imagekit_public_key",
+    "urlEndpoint": "https://ik.imagekit.io/your_imagekit_id",
+    "authenticationEndpoint": "/api/imagekit-auth"
+  },
+  "groq": {
+    "apiKey": "gsk_...zZad",
+    "model": "llama-3.1-8b-instant"
+  }
+}

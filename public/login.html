@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In - StudyMate AI</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 50%,
+          #f093fb 100%
+        );
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Enhanced animated background */
+      .bg-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .particle {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: float 12s ease-in-out infinite;
+        backdrop-filter: blur(2px);
+      }
+
+      .particle:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        left: 8%;
+        animation-delay: 0s;
+      }
+      .particle:nth-child(2) {
+        width: 60px;
+        height: 60px;
+        left: 18%;
+        animation-delay: 2s;
+      }
+      .particle:nth-child(3) {
+        width: 100px;
+        height: 100px;
+        left: 82%;
+        animation-delay: 4s;
+      }
+      .particle:nth-child(4) {
+        width: 70px;
+        height: 70px;
+        left: 72%;
+        animation-delay: 1s;
+      }
+      .particle:nth-child(5) {
+        width: 90px;
+        height: 90px;
+        left: 50%;
+        animation-delay: 3s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 0.3;
+        }
+        33% {
+          transform: translateY(-30px) rotate(120deg);
+          opacity: 0.6;
+        }
+        66% {
+          transform: translateY(-60px) rotate(240deg);
+          opacity: 0.4;
+        }
+      }
+
+      .back-btn {
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 12px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 100;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .back-btn i {
+        font-size: 0.9rem;
+      }
+
+      .auth-container {
+        width: 100%;
+        max-width: 420px;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(30px);
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        animation: slideUp 0.8s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .logo {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .auth-card h2 {
+        color: #2d3748;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        color: #64748b;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+
+      .auth-input {
+        width: 100%;
+        padding: 1rem 3rem 1rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        outline: none;
+        font-weight: 500;
+      }
+
+      .auth-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-1px);
+        background: white;
+      }
+
+      .auth-input:focus + .input-label,
+      .auth-input:not(:placeholder-shown) + .input-label {
+        transform: translateY(-2.2rem) scale(0.85);
+        color: #667eea;
+        font-weight: 600;
+      }
+
+      .input-label {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        color: #9ca3af;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        background: white;
+        padding: 0 0.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .input-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .auth-input:focus ~ .input-icon {
+        color: #667eea;
+      }
+
+      .input-validation {
+        position: absolute;
+        right: 2.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+      }
+
+      .input-validation.show {
+        opacity: 1;
+      }
+
+      .input-validation.valid {
+        color: #10b981;
+      }
+
+      .input-validation.invalid {
+        color: #ef4444;
+      }
+
+      .forgot-password {
+        text-align: right;
+        margin: -0.5rem 0 1.5rem 0;
+      }
+
+      .forgot-password a {
+        font-size: 0.85rem;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .forgot-password a:hover {
+        color: #5b21b6;
+      }
+
+      .auth-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 1rem 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .auth-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      }
+
+      .auth-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .auth-btn.loading {
+        color: transparent;
+      }
+
+      .auth-btn.loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid transparent;
+        border-top: 2px solid white;
+        border-radius: 50%;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      .demo-btn {
+        background: linear-gradient(135deg, #10b981, #059669);
+        margin-top: 0.5rem;
+      }
+
+      .demo-btn:hover:not(:disabled) {
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+      }
+
+      .auth-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .auth-link:hover {
+        color: #5b21b6;
+      }
+
+      .error-message,
+      .success-message {
+        padding: 1rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        display: none;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+      }
+
+      .error-message {
+        background: #fee2e2;
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+      }
+
+      .success-message {
+        background: #d1fae5;
+        color: #065f46;
+        border-left: 4px solid #10b981;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Responsive design */
+      @media (max-width: 480px) {
+        .auth-container {
+          max-width: 100%;
+          padding: 0 1rem;
+        }
+
+        .auth-card {
+          padding: 2rem 1.5rem;
+          border-radius: 20px;
+        }
+
+        .auth-card h2 {
+          font-size: 1.6rem;
+        }
+
+        .back-btn {
+          top: 1rem;
+          left: 1rem;
+          padding: 10px 16px;
+          font-size: 0.85rem;
+        }
+
+        .logo {
+          font-size: 3rem;
+        }
+      }
+
+      @media (max-height: 600px) {
+        .auth-card {
+          padding: 1.5rem;
+        }
+
+        .logo {
+          font-size: 2.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .auth-card h2 {
+          font-size: 1.5rem;
+        }
+
+        .subtitle {
+          margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+          margin-bottom: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <a href="index.html" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      Back to Home
+    </a>
+
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="logo">🎓</div>
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Continue your intelligent learning journey</p>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="loginForm">
+          <div class="input-group">
+            <input
+              type="email"
+              class="auth-input"
+              id="loginEmail"
+              placeholder=" "
+              required
+              autocomplete="email"
+            />
+            <label class="input-label">Email Address</label>
+            <i class="fas fa-envelope input-icon"></i>
+            <div class="input-validation" id="emailValidation"></div>
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              class="auth-input"
+              id="loginPassword"
+              placeholder=" "
+              required
+              autocomplete="current-password"
+            />
+            <label class="input-label">Password</label>
+            <i class="fas fa-lock input-icon"></i>
+            <div class="input-validation" id="passwordValidation"></div>
+          </div>
+
+          <div class="forgot-password">
+            <a href="#" class="auth-link">Forgot Password?</a>
+          </div>
+
+          <button type="submit" class="auth-btn" id="loginBtn">Sign In</button>
+        </form>
+
+        <button class="auth-btn demo-btn" onclick="demoLogin()">
+          🚀 Try Demo Account
+        </button>
+
+        <p style="margin-top: 1.5rem">
+          Don't have an account?
+          <a href="signup.html" class="auth-link">Create Account</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Firebase Integration -->
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+        updateDoc,
+      } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAUaZa2_5lpz1iBrXK3pSh4yMFzvON0FP4",
+        authDomain: "studymateai-b2444.firebaseapp.com",
+        projectId: "studymateai-b2444",
+        storageBucket: "studymateai-b2444.appspot.com",
+        messagingSenderId: "482393836923",
+        appId: "1:482393836923:web:20e7a74fe74f237b0b41de",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      // Authentication state listener
+      onAuthStateChanged(auth, (user) => {
+        if (user && window.location.pathname.includes("login.html")) {
+          // User is already logged in, redirect to dashboard
+          window.location.href = "index.html";
+        }
+      });
+
+      // Initialize when DOM loads
+      document.addEventListener("DOMContentLoaded", function () {
+        // If user is already logged in (via localStorage), redirect
+        if (localStorage.getItem("userLoggedIn") === "true") {
+          window.location.href = "index.html";
+        }
+
+        setupRealTimeValidation();
+        setupFormSubmission();
+        setupGlobalLogout();
+      });
+
+      // Global logout function for use across pages
+      function setupGlobalLogout() {
+        window.handleLogout = async function () {
+          try {
+            showSuccess("🔄 Signing out...");
+
+            // Sign out from Firebase
+            await signOut(auth);
+
+            // Clear all localStorage data
+            localStorage.removeItem("userLoggedIn");
+            localStorage.removeItem("userEmail");
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userId");
+            localStorage.clear(); // Clear any other stored data
+
+            // Show success message
+            showSuccess("✅ Successfully signed out!");
+
+            // Redirect to home page after a brief delay
+            setTimeout(() => {
+              window.location.href = "index.html";
+            }, 1500);
+          } catch (error) {
+            console.error("Logout error:", error);
+            showError("Error signing out. Please try again.");
+          }
+        };
+      }
+
+      // Validation functions
+      function setupRealTimeValidation() {
+        const emailInput = document.getElementById("loginEmail");
+        const passwordInput = document.getElementById("loginPassword");
+
+        emailInput.addEventListener("input", debounce(validateEmailReal, 300));
+        emailInput.addEventListener("blur", validateEmailReal);
+
+        passwordInput.addEventListener(
+          "input",
+          debounce(validatePasswordReal, 300)
+        );
+        passwordInput.addEventListener("blur", validatePasswordReal);
+      }
+
+      function validateEmailReal() {
+        const email = document.getElementById("loginEmail").value;
+        const validation = document.getElementById("emailValidation");
+        const input = document.getElementById("loginEmail");
+
+        if (email.length === 0) {
+          validation.className = "input-validation";
+          input.style.borderColor = "#e2e8f0";
+          return;
+        }
+
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+        validation.className = `input-validation show ${
+          isValid ? "valid" : "invalid"
+        }`;
+        validation.innerHTML = isValid
+          ? '<i class="fas fa-check-circle"></i>'
+          : '<i class="fas fa-exclamation-circle"></i>';
+
+        input.style.borderColor = isValid ? "#10b981" : "#ef4444";
+      }
+
+      function validatePasswordReal() {
+        const password = document.getElementById("loginPassword").value;
+        const validation = document.getElementById("passwordValidation");
+        const input = document.getElementById("loginPassword");
+
+        if (password.length === 0) {
+          validation.className = "input-validation";
+          input.style.borderColor = "#e2e8f0";
+          return;
+        }
+
+        const isValid = password.length >= 6;
+
+        validation.className = `input-validation show ${
+          isValid ? "valid" : "invalid"
+        }`;
+        validation.innerHTML = isValid
+          ? '<i class="fas fa-check-circle"></i>'
+          : '<i class="fas fa-exclamation-circle"></i>';
+
+        input.style.borderColor = isValid ? "#10b981" : "#ef4444";
+      }
+
+      function setupFormSubmission() {
+        document
+          .getElementById("loginForm")
+          .addEventListener("submit", handleLogin);
+      }
+
+      // Enhanced Firebase login function
+      async function handleLogin(e) {
+        e.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        const loginBtn = document.getElementById("loginBtn");
+
+        if (!email || !password) {
+          showError("Please fill in all fields");
+          return;
+        }
+
+        if (!isValidEmail(email)) {
+          showError("Please enter a valid email address");
+          return;
+        }
+
+        loginBtn.classList.add("loading");
+        loginBtn.disabled = true;
+
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          // Update last login in Firestore
+          try {
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+
+            let userName = user.displayName || user.email.split("@")[0];
+
+            if (userSnap.exists()) {
+              // Update existing user
+              await updateDoc(userRef, {
+                lastLogin: new Date(),
+                email: user.email,
+              });
+              // Get existing name from database
+              const userData = userSnap.data();
+              userName = userData.name || userName;
+            } else {
+              // Create new user document (shouldn't happen with proper signup)
+              await setDoc(userRef, {
+                name: userName,
+                email: user.email,
+                createdAt: new Date(),
+                lastLogin: new Date(),
+              });
+            }
+
+            // Store user data in localStorage
+            localStorage.setItem("userLoggedIn", "true");
+            localStorage.setItem("userEmail", user.email);
+            localStorage.setItem("userName", userName);
+            localStorage.setItem("userId", user.uid);
+          } catch (firestoreError) {
+            console.warn("Could not update user data:", firestoreError);
+            // Still proceed with login even if Firestore fails
+            localStorage.setItem("userLoggedIn", "true");
+            localStorage.setItem("userEmail", user.email);
+            localStorage.setItem(
+              "userName",
+              user.displayName || user.email.split("@")[0]
+            );
+            localStorage.setItem("userId", user.uid);
+          }
+
+          showSuccess("🎉 Login successful! Welcome back!");
+
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
+        } catch (error) {
+          console.error("Login error:", error);
+          let errorMessage = "Login failed";
+
+          switch (error.code) {
+            case "auth/user-not-found":
+              errorMessage =
+                "No account found with this email address. Please check your email or create a new account.";
+              break;
+            case "auth/wrong-password":
+              errorMessage = "Incorrect password. Please try again.";
+              break;
+            case "auth/invalid-email":
+              errorMessage = "Please enter a valid email address";
+              break;
+            case "auth/user-disabled":
+              errorMessage = "This account has been disabled";
+              break;
+            case "auth/too-many-requests":
+              errorMessage = "Too many failed attempts. Please try again later";
+              break;
+            case "auth/network-request-failed":
+              errorMessage =
+                "Network error. Please check your internet connection";
+              break;
+            case "auth/invalid-credential":
+              errorMessage =
+                "Invalid email or password. Please check your credentials";
+              break;
+            default:
+              errorMessage = `Login failed: ${error.message}`;
+          }
+
+          showError(errorMessage);
+        } finally {
+          loginBtn.classList.remove("loading");
+          loginBtn.disabled = false;
+        }
+      }
+
+      // Demo login function
+      async function demoLogin() {
+        const emailField = document.getElementById("loginEmail");
+        const passwordField = document.getElementById("loginPassword");
+
+        showSuccess("🤖 Demo mode activated!");
+
+        emailField.value = "demo@studymate.ai";
+        passwordField.value = "demo123456";
+
+        // Trigger validation
+        emailField.dispatchEvent(new Event("input"));
+        passwordField.dispatchEvent(new Event("input"));
+
+        setTimeout(() => {
+          document
+            .getElementById("loginForm")
+            .dispatchEvent(new Event("submit"));
+        }, 1000);
+      }
+
+      // Utility functions
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function showError(message) {
+        const errorDiv = document.getElementById("errorMessage");
+        const successDiv = document.getElementById("successMessage");
+
+        if (successDiv) successDiv.style.display = "none";
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+        errorDiv.style.display = "block";
+
+        setTimeout(() => {
+          errorDiv.style.display = "none";
+        }, 7000);
+      }
+
+      function showSuccess(message) {
+        const errorDiv = document.getElementById("errorMessage");
+        const successDiv = document.getElementById("successMessage");
+
+        if (errorDiv) errorDiv.style.display = "none";
+        successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        successDiv.style.display = "block";
+
+        setTimeout(() => {
+          successDiv.style.display = "none";
+        }, 5000);
+      }
+
+      // Global function assignments
+      window.demoLogin = demoLogin;
+      window.showError = showError;
+      window.showSuccess = showSuccess;
+
+      // Auto-focus first input
+      setTimeout(() => {
+        const emailInput = document.getElementById("loginEmail");
+        if (!emailInput.value) {
+          emailInput.focus();
+        }
+      }, 300);
+
+      // Handle redirect from signup page
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("signup") === "success") {
+        showSuccess(
+          "🎉 Account created successfully! Please sign in to continue."
+        );
+
+        // Clear the URL parameter
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
+    </script>
+  </body>
+</html>

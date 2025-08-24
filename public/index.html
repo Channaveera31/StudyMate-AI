@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StudyMate AI — study smarter not harder</title>
+
+    <!-- Icons & Fonts -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Lottie -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Animated background layers -->
+    <div class="bg-gradient"></div>
+    <div class="bg-noise"></div>
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+      <a href="#" class="brand">
+        <img src="assets/logo.png" alt="StudyMate AI" class="brand-logo" />
+        <div class="brand-text">
+          <span class="brand-title">StudyMate <span class="ai">AI</span></span>
+          <span class="brand-tag">study smarter not harder</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact</a>
+        <div class="divider"></div>
+        <div class="auth-dropdown">
+          <button class="user-btn" id="userMenuBtn">
+            <i class="ri-user-3-line"></i> Account
+            <i class="ri-arrow-down-s-line caret"></i>
+          </button>
+          <div class="dropdown" id="userDropdown">
+            <a href="login.html"
+              ><i class="ri-login-circle-line"></i> Sign In</a
+            >
+            <a href="signup.html"><i class="ri-user-add-line"></i> Sign Up</a>
+          </div>
+        </div>
+      </nav>
+
+      <button class="hamburger" id="hamburger">
+        <i class="ri-menu-3-line"></i>
+      </button>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="pill">
+            <i class="ri-sparkling-2-line"></i> New · AI Study Companion
+          </div>
+          <h1>Study <span class="accent">Smarter</span>, not Harder</h1>
+          <p class="subtitle">
+            Scan notes with your camera, get instant AI summaries, generate
+            flashcards & quizzes, and keep your study plan on track — all in
+            real time.
+          </p>
+          <div class="cta">
+            <a href="signup.html" class="btn btn-primary glow">
+              <i class="ri-rocket-2-line"></i> Get Started
+            </a>
+            <a href="login.html" class="btn btn-ghost floating">
+              <i class="ri-compass-3-line"></i> Explore Portal
+            </a>
+          </div>
+          <div class="hero-badges">
+            <span><i class="ri-shield-check-line"></i> Firebase Auth</span>
+            <span><i class="ri-flashlight-line"></i> Real-time Firestore</span>
+            <span><i class="ri-cloud-line"></i> ImageKit Storage</span>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <img class="hero-gif" src="assets/ai-study.png" alt="AI Study" />
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="num">10k+</span><span class="label">Summaries</span>
+        </div>
+        <div class="stat">
+          <span class="num">25k+</span><span class="label">Flashcards</span>
+        </div>
+        <div class="stat">
+          <span class="num">99.9%</span><span class="label">Uptime</span>
+        </div>
+        <div class="stat">
+          <span class="num">Realtime</span><span class="label">Chatbot</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section section-about">
+      <div class="section-head">
+        <h2><i class="ri-book-open-line"></i> About StudyMate AI</h2>
+        <p>
+          We turn your raw study material into bite-sized, test-ready knowledge
+          with AI.
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card glass">
+          <i class="ri-camera-3-line icon"></i>
+          <h3>Scan Anything</h3>
+          <p>
+            Use your camera to capture textbook pages, notes, handouts — we’ll
+            clean, OCR, and prep it for AI.
+          </p>
+        </div>
+        <div class="about-card glass">
+          <i class="ri-magic-line icon"></i>
+          <h3>Summarize Fast</h3>
+          <p>
+            AI highlights key points, definitions, formulas, and diagrams with
+            one tap.
+          </p>
+        </div>
+        <div class="about-card glass">
+          <i class="ri-stack-line icon"></i>
+          <h3>Instant Flashcards</h3>
+          <p>Auto-generate decks you can review with spaced repetition.</p>
+        </div>
+        <div class="about-card glass">
+          <i class="ri-calendar-check-line icon"></i>
+          <h3>Smart Planner</h3>
+          <p>Personalized schedule based on exam dates and your progress.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ Features Section -->
+    <section id="features" class="section section-features">
+      <div class="section-head">
+        <h2><i class="ri-star-smile-line"></i> Features</h2>
+        <p>Everything you need to study like a pro.</p>
+      </div>
+
+      <div class="feature-grid">
+        <!-- Camera Scanner -->
+        <div class="feature-card">
+          <div class="fc-icon"><i class="ri-scan-2-line"></i></div>
+          <h3>Camera Scanner</h3>
+          <p>
+            Live camera + file upload. Clean capture, OCR, and AI processing.
+          </p>
+          <a
+            href="#"
+            class="mini-btn"
+            onclick="handleFeatureClick('scanner.html')"
+          >
+            Open Scanner <i class="ri-arrow-right-up-line"></i>
+          </a>
+        </div>
+
+        <!-- AI Summaries -->
+        <div class="feature-card">
+          <div class="fc-icon"><i class="ri-file-search-line"></i></div>
+          <h3>AI Summaries</h3>
+          <p>Get concise summaries with highlighted key ideas and terms.</p>
+          <a
+            href="#"
+            class="mini-btn"
+            onclick="handleFeatureClick('summaries.html')"
+          >
+            View Summaries <i class="ri-arrow-right-up-line"></i>
+          </a>
+        </div>
+
+        <!-- Auto Flashcards -->
+        <div class="feature-card">
+          <div class="fc-icon"><i class="ri-mind-map"></i></div>
+          <h3>Auto Flashcards</h3>
+          <p>Turn notes into smart Q&A decks instantly.</p>
+          <a
+            href="#"
+            class="mini-btn"
+            onclick="handleFeatureClick('flashcards.html')"
+          >
+            Build Decks <i class="ri-arrow-right-up-line"></i>
+          </a>
+        </div>
+
+        <!-- Quiz Generator -->
+        <div class="feature-card">
+          <div class="fc-icon"><i class="ri-question-answer-line"></i></div>
+          <h3>Quiz Generator</h3>
+          <p>Generate MCQs and short answers from your notes or PDFs.</p>
+          <a
+            href="#"
+            class="mini-btn"
+            onclick="handleFeatureClick('quiz.html')"
+          >
+            Make Quiz <i class="ri-arrow-right-up-line"></i>
+          </a>
+        </div>
+
+        <!-- Group Study -->
+        <div class="feature-card">
+          <div class="fc-icon"><i class="ri-team-line"></i></div>
+          <h3>Group Study</h3>
+          <p>Collaborative boards with threads, votes, and verified answers.</p>
+          <a
+            href="#"
+            class="mini-btn"
+            onclick="handleFeatureClick('dashboard.html')"
+          >
+            Open Boards <i class="ri-arrow-right-up-line"></i>
+          </a>
+        </div>
+
+        <!-- Realtime Chatbot -->
+        <div class="feature-card">
+          <div class="fc-icon"><i class="ri-robot-line"></i></div>
+          <h3>Realtime Chatbot</h3>
+          <p>Ask anything; get instant context-aware help.</p>
+          <a
+            href="#"
+            class="mini-btn"
+            onclick="handleFeatureClick('#chat-widget')"
+          >
+            Chat Now <i class="ri-arrow-right-up-line"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="section section-testimonials">
+      <div class="section-head">
+        <h2><i class="ri-chat-smile-2-line"></i> Loved by Students</h2>
+        <p>Hear it from learners who levelled up.</p>
+      </div>
+
+      <div class="testi-slider" id="testiSlider">
+        <div class="slide">
+          <div class="avatar"><i class="ri-user-smile-line"></i></div>
+          <p>“Cut my revision time in half. Summaries are spot on.”</p>
+          <span class="name">— Sarah K.</span>
+        </div>
+        <div class="slide">
+          <div class="avatar"><i class="ri-mental-health-line"></i></div>
+          <p>“Flashcards + quizzes = instant practice. Super clean UI!”</p>
+          <span class="name">— Arjun M.</span>
+        </div>
+        <div class="slide">
+          <div class="avatar"><i class="ri-brain-line"></i></div>
+          <p>“Group boards + chatbot make tough topics painless.”</p>
+          <span class="name">— Zoe L.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section section-contact">
+      <div class="section-head">
+        <h2><i class="ri-customer-service-2-line"></i> Contact Us</h2>
+        <p>Questions? Feedback? We’d love to hear from you.</p>
+      </div>
+
+      <form class="contact-form" id="contactForm">
+        <div class="row">
+          <input type="text" placeholder="Your Name" required />
+          <input type="email" placeholder="Your Email" required />
+        </div>
+        <textarea placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit" class="btn btn-primary glow">
+          <i class="ri-send-plane-2-line"></i> Send Message
+        </button>
+      </form>
+    </section>
+
+    <!-- Floating Chatbot 
+    <div id="chat-widget" class="chatbot">
+      <button class="fab" id="chatFab" title="Chat with StudyMate AI">
+        <i class="ri-message-3-line"></i>
+      </button>
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+          <div class="ch-left">
+            <i class="ri-robot-2-line"></i>
+            <span>StudyMate AI</span>
+          </div>
+          <button id="chatClose"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="chat-body" id="chatBody">
+          <div class="msg bot">
+            Hi! I’m your StudyMate. Ask me anything about your subjects or how
+            this app works.
+          </div>
+        </div>
+        <div class="chat-input">
+          <input
+            id="chatInput"
+            type="text"
+            placeholder="Type your message..."
+          />
+          <button id="chatSend"><i class="ri-send-plane-2-line"></i></button>
+        </div>
+      </div>
+    </div> -->
+
+    <footer class="footer">
+      <div>© <span id="year"></span> StudyMate AI. All rights reserved.</div>
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </footer>
+
+    <!-- ✅ Use module-based Firebase setup -->
+    <script type="module" src="js/main.js"></script>
+    <script src="js/chatbot.js"></script>
+  </body>
+</html>

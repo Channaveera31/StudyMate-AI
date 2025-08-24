@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Q&A Board - StudyMate AI</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Floating elements background */
+      .floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+      }
+
+      .floating-element {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .floating-element:nth-child(odd) {
+        border-radius: 20px;
+        animation-duration: 10s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+          opacity: 0.7;
+        }
+        50% {
+          transform: translateY(-30px) rotate(180deg);
+          opacity: 1;
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+      }
+
+      /* Enhanced header */
+      .qa-header {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 24px 32px;
+        margin-bottom: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .qa-header h1 {
+        color: white;
+        font-size: 2.2rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 28px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 16px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+      }
+
+      .auth-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 12px 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .auth-btn {
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .auth-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+      }
+
+      .user-info {
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .online-indicator {
+        width: 8px;
+        height: 8px;
+        background: #48bb78;
+        border-radius: 50%;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .qa-container {
+        display: grid;
+        gap: 32px;
+        animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Question posting section */
+      .ask-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ask-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        border-radius: 24px 24px 0 0;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .question-input {
+        width: 100%;
+        min-height: 120px;
+        padding: 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        font-size: 1rem;
+        font-family: inherit;
+        resize: vertical;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+        margin-bottom: 20px;
+      }
+
+      .question-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .question-input::placeholder {
+        color: #a0aec0;
+        font-style: italic;
+      }
+
+      .post-question-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .post-question-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .post-question-btn:hover::before {
+        left: 100%;
+      }
+
+      .post-question-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      }
+
+      .post-question-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .login-prompt {
+        background: linear-gradient(135deg, #fbb6ce 0%, #f687b3 100%);
+        color: #744210;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .login-prompt:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(251, 182, 206, 0.4);
+      }
+
+      /* Questions list */
+      .questions-list {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .questions-list::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #48bb78, #38a169);
+        border-radius: 24px 24px 0 0;
+      }
+
+      .question-item {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .question-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .question-item:hover {
+        transform: translateX(8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      .question-item:hover::before {
+        transform: scaleX(1);
+      }
+
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .question-meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.85rem;
+        color: #718096;
+      }
+
+      .question-text {
+        font-size: 1.1rem;
+        color: #2d3748;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .question-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        border: 1px solid #e2e8f0;
+        background: white;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+      }
+
+      .action-btn:hover {
+        background: #f7fafc;
+        border-color: #667eea;
+        color: #667eea;
+        transform: translateY(-1px);
+      }
+
+      .like-btn.liked {
+        background: #fed7d7;
+        border-color: #f56565;
+        color: #c53030;
+      }
+
+      .answer-section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #f7fafc;
+      }
+
+      .answer-input {
+        width: 100%;
+        min-height: 80px;
+        padding: 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        resize: vertical;
+        transition: all 0.3s ease;
+        margin-bottom: 12px;
+      }
+
+      .answer-input:focus {
+        outline: none;
+        border-color: #48bb78;
+        box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.15);
+      }
+
+      .submit-answer-btn {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .submit-answer-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+      }
+
+      .submit-answer-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .answers-list {
+        margin-top: 16px;
+      }
+
+      .answer-item {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        border-left: 3px solid #48bb78;
+      }
+
+      .answer-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        font-size: 0.8rem;
+        color: #718096;
+      }
+
+      .answer-text {
+        color: #4a5568;
+        line-height: 1.6;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: #718096;
+        padding: 60px 20px;
+        font-size: 1.1rem;
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: #cbd5e0;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      /* Animations */
+      @keyframes slideDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideUp {
+        0% {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .qa-header {
+          flex-direction: column;
+          gap: 16px;
+          text-align: center;
+          padding: 20px;
+        }
+
+        .qa-header h1 {
+          font-size: 1.8rem;
+        }
+
+        .container {
+          padding: 16px;
+        }
+
+        .ask-section,
+        .questions-list {
+          padding: 24px;
+        }
+
+        .floating-elements {
+          display: none;
+        }
+      }
+
+      /* Custom scrollbar */
+      .questions-list::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .questions-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      .questions-list::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 10px;
+      }
+
+      .questions-list::-webkit-scrollbar-thumb:hover {
+        background: #5a6fd8;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Floating background elements -->
+    <div class="floating-elements" id="floatingElements"></div>
+
+    <div class="container">
+      <header class="qa-header">
+        <a href="dashboard.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          Back
+        </a>
+        <h1>
+          <i class="fas fa-comments"></i>
+          Group Q&A Board
+        </h1>
+        <div class="auth-section">
+          <div id="authSection">
+            <div id="userInfo" class="user-info" style="display: none">
+              <div class="user-avatar" id="userAvatar"></div>
+              <span id="userName"></span>
+              <div class="online-indicator"></div>
+            </div>
+            <div id="guestInfo" class="user-info">
+              <span>Not signed in</span>
+            </div>
+            <button id="logoutBtn" class="auth-btn" style="display: none">
+              <i class="fas fa-sign-out-alt"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section class="qa-container">
+        <!-- Ask Question Section -->
+        <div class="ask-section">
+          <h2 class="section-title">
+            <i class="fas fa-question-circle"></i>
+            Ask a Question
+          </h2>
+
+          <div id="loginRequired" style="display: none">
+            <p style="color: #718096; margin-bottom: 20px; text-align: center">
+              <i class="fas fa-lock"></i>
+              Please sign in to ask questions and participate in discussions
+            </p>
+            <a href="login.html" class="login-prompt">
+              <i class="fas fa-sign-in-alt"></i>
+              Sign In to Continue
+            </a>
+          </div>
+
+          <div id="questionForm">
+            <textarea
+              id="questionInput"
+              class="question-input"
+              placeholder="What would you like to ask? Be specific and provide context to get better answers..."
+              rows="4"
+            ></textarea>
+
+            <button id="postQuestionBtn" class="post-question-btn" disabled>
+              <i class="fas fa-paper-plane"></i>
+              Post Question
+            </button>
+          </div>
+        </div>
+
+        <!-- Questions List -->
+        <div class="questions-list">
+          <h2 class="section-title">
+            <i class="fas fa-list"></i>
+            Recent Questions
+            <span
+              id="onlineCount"
+              style="
+                font-size: 0.8rem;
+                background: #48bb78;
+                color: white;
+                padding: 4px 12px;
+                border-radius: 12px;
+                margin-left: auto;
+              "
+            >
+              <i class="fas fa-users"></i> 12 online
+            </span>
+          </h2>
+
+          <div id="questionsList">
+            <div class="empty-state">
+              <i class="fas fa-comments"></i>
+              <p>No questions yet. Be the first to ask!</p>
+              <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8">
+                Your questions help the entire community learn together.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // Authentication and User Management System
+      class UserAuth {
+        constructor() {
+          this.currentUser = null;
+          this.isLoggedIn = false;
+          this.init();
+        }
+
+        init() {
+          // Check if user is logged in from registration system
+          this.checkAuthStatus();
+          this.setupEventListeners();
+        }
+
+        checkAuthStatus() {
+          // Check multiple possible sources for user data
+          const sessionUser = sessionStorage.getItem("currentUser");
+          const localUser = localStorage.getItem("currentUser");
+          const userSession = sessionStorage.getItem("userSession");
+
+          // Try to get user from various storage methods
+          let userData = null;
+
+          if (sessionUser) {
+            try {
+              userData = JSON.parse(sessionUser);
+            } catch (e) {
+              userData = { username: sessionUser };
+            }
+          } else if (localUser) {
+            try {
+              userData = JSON.parse(localUser);
+            } catch (e) {
+              userData = { username: localUser };
+            }
+          } else if (userSession) {
+            try {
+              userData = JSON.parse(userSession);
+            } catch (e) {
+              userData = { username: userSession };
+            }
+          }
+
+          // Check for user data from registration form
+          const registeredUsers = JSON.parse(
+            localStorage.getItem("registeredUsers") || "[]"
+          );
+          const loggedInUserId = localStorage.getItem("loggedInUserId");
+
+          if (loggedInUserId && registeredUsers.length > 0) {
+            const foundUser = registeredUsers.find(
+              (user) =>
+                user.id === loggedInUserId ||
+                user.username === loggedInUserId ||
+                user.email === loggedInUserId
+            );
+            if (foundUser) {
+              userData = foundUser;
+            }
+          }
+
+          // Set user data if found
+          if (
+            userData &&
+            (userData.username || userData.email || userData.name)
+          ) {
+            this.currentUser = {
+              id: userData.id || userData.username || userData.email,
+              username: userData.username || userData.name || userData.email,
+              email: userData.email || "",
+              name: userData.name || userData.username || "User",
+            };
+            this.isLoggedIn = true;
+          }
+
+          this.updateUI();
+        }
+
+        setupEventListeners() {
+          // Logout functionality
+          document.getElementById("logoutBtn").addEventListener("click", () => {
+            this.logout();
+          });
+
+          // Check for auth changes periodically
+          setInterval(() => {
+            this.checkAuthStatus();
+          }, 2000);
+
+          // Listen for storage changes (when user logs in from another tab)
+          window.addEventListener("storage", (e) => {
+            if (
+              e.key === "currentUser" ||
+              e.key === "loggedInUserId" ||
+              e.key === "userSession"
+            ) {
+              this.checkAuthStatus();
+            }
+          });
+        }
+
+        updateUI() {
+          const userInfo = document.getElementById("userInfo");
+          const guestInfo = document.getElementById("guestInfo");
+          const userName = document.getElementById("userName");
+          const userAvatar = document.getElementById("userAvatar");
+          const logoutBtn = document.getElementById("logoutBtn");
+          const loginRequired = document.getElementById("loginRequired");
+          const questionForm = document.getElementById("questionForm");
+          const postQuestionBtn = document.getElementById("postQuestionBtn");
+
+          if (this.isLoggedIn && this.currentUser) {
+            // Show logged in state
+            userInfo.style.display = "flex";
+            guestInfo.style.display = "none";
+            logoutBtn.style.display = "flex";
+            loginRequired.style.display = "none";
+            questionForm.style.display = "block";
+
+            // Update user display
+            userName.textContent =
+              this.currentUser.name || this.currentUser.username;
+            userAvatar.textContent = (
+              this.currentUser.name || this.currentUser.username
+            )
+              .charAt(0)
+              .toUpperCase();
+
+            // Enable question posting
+            this.setupQuestionPosting();
+          } else {
+            // Show guest state
+            userInfo.style.display = "none";
+            guestInfo.style.display = "flex";
+            logoutBtn.style.display = "none";
+            loginRequired.style.display = "block";
+            questionForm.style.display = "none";
+          }
+        }
+
+        setupQuestionPosting() {
+          const questionInput = document.getElementById("questionInput");
+          const postQuestionBtn = document.getElementById("postQuestionBtn");
+
+          // Enable input monitoring
+          questionInput.addEventListener("input", () => {
+            const hasContent = questionInput.value.trim().length > 10;
+            postQuestionBtn.disabled = !hasContent;
+          });
+
+          // Remove any existing event listeners to prevent duplicates
+          const newPostBtn = postQuestionBtn.cloneNode(true);
+          postQuestionBtn.parentNode.replaceChild(newPostBtn, postQuestionBtn);
+
+          // Add click handler for posting questions
+          newPostBtn.addEventListener("click", () => {
+            if (this.isLoggedIn) {
+              questionManager.postQuestion();
+            }
+          });
+        }
+
+        logout() {
+          // Clear all possible auth storage
+          sessionStorage.removeItem("currentUser");
+          localStorage.removeItem("currentUser");
+          sessionStorage.removeItem("userSession");
+          localStorage.removeItem("loggedInUserId");
+          localStorage.removeItem("isLoggedIn");
+
+          this.currentUser = null;
+          this.isLoggedIn = false;
+          this.updateUI();
+
+          showNotification("Logged out successfully", "info");
+        }
+
+        getUser() {
+          return this.currentUser;
+        }
+
+        isAuthenticated() {
+          return this.isLoggedIn;
+        }
+      }
+
+      // Question Management System
+      class QuestionManager {
+        constructor(userAuth) {
+          this.userAuth = userAuth;
+          this.questions = JSON.parse(
+            localStorage.getItem("qa_questions") || "[]"
+          );
+          this.init();
+        }
+
+        init() {
+          this.renderQuestions();
+          this.addSampleQuestions();
+          this.startRealTimeUpdates();
+        }
+
+        postQuestion() {
+          const questionInput = document.getElementById("questionInput");
+          const questionText = questionInput.value.trim();
+
+          if (!this.userAuth.isAuthenticated()) {
+            showNotification("Please sign in to post questions", "error");
+            return;
+          }
+
+          if (!questionText || questionText.length < 10) {
+            showNotification(
+              "Please write a more detailed question (at least 10 characters)",
+              "error"
+            );
+            return;
+          }
+
+          const user = this.userAuth.getUser();
+          const question = {
+            id: Date.now(),
+            text: questionText,
+            author: user.name || user.username,
+            authorId: user.id,
+            timestamp: new Date().toLocaleString(),
+            likes: 0,
+            answers: [],
+            isLiked: false,
+          };
+
+          this.questions.unshift(question);
+          localStorage.setItem("qa_questions", JSON.stringify(this.questions));
+
+          questionInput.value = "";
+          document.getElementById("postQuestionBtn").disabled = true;
+
+          this.renderQuestions();
+          showNotification("Question posted successfully!", "success");
+        }
+
+        renderQuestions() {
+          const questionsList = document.getElementById("questionsList");
+
+          if (this.questions.length === 0) {
+            questionsList.innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-comments"></i>
+                <p>No questions yet. Be the first to ask!</p>
+                <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">
+                  Your questions help the entire community learn together.
+                </p>
+              </div>
+            `;
+            return;
+          }
+
+          questionsList.innerHTML = this.questions
+            .map(
+              (question, index) => `
+              <div class="question-item" style="animation-delay: ${
+                index * 0.1
+              }s">
+                <div class="question-header">
+                  <div class="question-meta">
+                    <div class="user-avatar">
+                      ${question.author.charAt(0).toUpperCase()}
+                    </div>
+                    <span><strong>${question.author}</strong></span>
+                    <span>${question.timestamp}</span>
+                  </div>
+                </div>
+                
+                <div class="question-text">${question.text}</div>
+                
+                <div class="question-actions">
+                  <button class="action-btn like-btn ${
+                    question.isLiked ? "liked" : ""
+                  }" 
+                          onclick="questionManager.toggleLike(${question.id})">
+                    <i class="fas fa-heart"></i>
+                    ${question.likes} ${question.likes === 1 ? "like" : "likes"}
+                  </button>
+                  <button class="action-btn" onclick="questionManager.toggleAnswerSection(${
+                    question.id
+                  })">
+                    <i class="fas fa-reply"></i>
+                    ${question.answers.length} ${
+                question.answers.length === 1 ? "answer" : "answers"
+              }
+                  </button>
+                  <button class="action-btn" onclick="questionManager.shareQuestion(${
+                    question.id
+                  })">
+                    <i class="fas fa-share"></i>
+                    Share
+                  </button>
+                </div>
+                
+                <div class="answer-section" id="answer-section-${
+                  question.id
+                }" style="display: none;">
+                  ${
+                    this.userAuth.isAuthenticated()
+                      ? `
+                    <textarea 
+                      id="answer-input-${question.id}" 
+                      class="answer-input" 
+                      placeholder="Write your answer..."
+                    ></textarea>
+                    <button class="submit-answer-btn" onclick="questionManager.submitAnswer(${question.id})">
+                      <i class="fas fa-paper-plane"></i>
+                      Submit Answer
+                    </button>
+                  `
+                      : `
+                    <p style="text-align: center; color: #718096; padding: 20px;">
+                      <i class="fas fa-lock"></i>
+                      <a href="login.html" style="color: #667eea; text-decoration: none; font-weight: 600;">
+                        Sign in to answer this question
+                      </a>
+                    </p>
+                  `
+                  }
+                  
+                  <div class="answers-list">
+                    ${question.answers
+                      .map(
+                        (answer) => `
+                      <div class="answer-item">
+                        <div class="answer-meta">
+                          <div class="user-avatar" style="width: 24px; height: 24px; font-size: 0.8rem;">
+                            ${answer.author.charAt(0).toUpperCase()}
+                          </div>
+                          <span><strong>${answer.author}</strong></span>
+                          <span>${answer.timestamp}</span>
+                        </div>
+                        <div class="answer-text">${answer.text}</div>
+                      </div>
+                    `
+                      )
+                      .join("")}
+                  </div>
+                </div>
+              </div>
+            `
+            )
+            .join("");
+        }
+
+        toggleLike(questionId) {
+          if (!this.userAuth.isAuthenticated()) {
+            showNotification("Please sign in to like questions", "error");
+            return;
+          }
+
+          const question = this.questions.find((q) => q.id === questionId);
+          if (question) {
+            if (question.isLiked) {
+              question.likes--;
+              question.isLiked = false;
+            } else {
+              question.likes++;
+              question.isLiked = true;
+            }
+            localStorage.setItem(
+              "qa_questions",
+              JSON.stringify(this.questions)
+            );
+            this.renderQuestions();
+
+            const action = question.isLiked ? "liked" : "unliked";
+            showNotification(`Question ${action}!`, "info");
+          }
+        }
+
+        toggleAnswerSection(questionId) {
+          const answerSection = document.getElementById(
+            `answer-section-${questionId}`
+          );
+          const isVisible = answerSection.style.display !== "none";
+
+          answerSection.style.display = isVisible ? "none" : "block";
+
+          if (!isVisible) {
+            answerSection.style.animation = "slideUp 0.3s ease-out";
+            const answerInput = document.getElementById(
+              `answer-input-${questionId}`
+            );
+            if (answerInput) {
+              answerInput.focus();
+            }
+          }
+        }
+
+        submitAnswer(questionId) {
+          if (!this.userAuth.isAuthenticated()) {
+            showNotification("Please sign in to answer questions", "error");
+            return;
+          }
+
+          const answerInput = document.getElementById(
+            `answer-input-${questionId}`
+          );
+          const answerText = answerInput.value.trim();
+
+          if (!answerText) {
+            showNotification("Please write an answer first!", "error");
+            return;
+          }
+
+          const question = this.questions.find((q) => q.id === questionId);
+          const user = this.userAuth.getUser();
+
+          if (question && user) {
+            const answer = {
+              id: Date.now(),
+              text: answerText,
+              author: user.name || user.username,
+              authorId: user.id,
+              timestamp: new Date().toLocaleString(),
+            };
+
+            question.answers.push(answer);
+            localStorage.setItem(
+              "qa_questions",
+              JSON.stringify(this.questions)
+            );
+
+            answerInput.value = "";
+            this.renderQuestions();
+            showNotification("Answer submitted successfully!", "success");
+
+            // Re-open the answer section to show the new answer
+            setTimeout(() => {
+              this.toggleAnswerSection(questionId);
+            }, 100);
+          }
+        }
+
+        shareQuestion(questionId) {
+          const question = this.questions.find((q) => q.id === questionId);
+          if (question) {
+            const shareText = `Check out this question: "${question.text}" - StudyMate AI Q&A`;
+
+            if (navigator.share) {
+              navigator.share({
+                title: "StudyMate AI Question",
+                text: shareText,
+                url: window.location.href,
+              });
+            } else {
+              // Fallback: copy to clipboard
+              navigator.clipboard.writeText(shareText).then(() => {
+                showNotification("Question copied to clipboard!", "success");
+              });
+            }
+          }
+        }
+
+        addSampleQuestions() {
+          if (this.questions.length === 0) {
+            const sampleQuestions = [
+              {
+                id: Date.now() - 3000,
+                text: "Can someone explain the concept of derivatives in calculus? I'm having trouble understanding the practical applications.",
+                author: "Sarah M.",
+                authorId: "sample1",
+                timestamp: new Date(Date.now() - 3600000).toLocaleString(),
+                likes: 5,
+                isLiked: false,
+                answers: [
+                  {
+                    id: Date.now() - 2000,
+                    text: "Derivatives represent the rate of change! Think of it like the speedometer in your car - it shows how fast your position is changing at any moment.",
+                    author: "Mike Chen",
+                    authorId: "sample2",
+                    timestamp: new Date(Date.now() - 1800000).toLocaleString(),
+                  },
+                ],
+              },
+              {
+                id: Date.now() - 2000,
+                text: "What's the best way to memorize chemical formulas for organic chemistry? Any tips or tricks?",
+                author: "Alex K.",
+                authorId: "sample3",
+                timestamp: new Date(Date.now() - 7200000).toLocaleString(),
+                likes: 3,
+                isLiked: false,
+                answers: [],
+              },
+              {
+                id: Date.now() - 1000,
+                text: "How do you approach essay writing for literature analysis? I always struggle with thesis statements.",
+                author: "Emma R.",
+                authorId: "sample4",
+                timestamp: new Date(Date.now() - 10800000).toLocaleString(),
+                likes: 7,
+                isLiked: false,
+                answers: [
+                  {
+                    id: Date.now() - 500,
+                    text: "Start with a strong hook, then narrow down to your specific argument. Make sure your thesis is debatable and specific!",
+                    author: "Prof. Johnson",
+                    authorId: "sample5",
+                    timestamp: new Date(Date.now() - 9000000).toLocaleString(),
+                  },
+                  {
+                    id: Date.now() - 300,
+                    text: "I use the PEEL method: Point, Evidence, Explain, Link. It really helps structure each paragraph!",
+                    author: "Study Buddy",
+                    authorId: "sample6",
+                    timestamp: new Date(Date.now() - 7200000).toLocaleString(),
+                  },
+                ],
+              },
+            ];
+
+            this.questions = sampleQuestions;
+            localStorage.setItem(
+              "qa_questions",
+              JSON.stringify(this.questions)
+            );
+            this.renderQuestions();
+          }
+        }
+
+        startRealTimeUpdates() {
+          // Simulate real-time activity
+          setInterval(() => {
+            this.updateOnlineCount();
+            this.simulateActivity();
+          }, 5000);
+        }
+
+        updateOnlineCount() {
+          const onlineUsers = Math.floor(Math.random() * 10) + 8;
+          const onlineCount = document.getElementById("onlineCount");
+          onlineCount.innerHTML = `<i class="fas fa-users"></i> ${onlineUsers} online`;
+        }
+
+        simulateActivity() {
+          // Add random activity (simulate other users)
+          if (Math.random() > 0.9 && this.questions.length > 0) {
+            const randomQuestion =
+              this.questions[Math.floor(Math.random() * this.questions.length)];
+            if (Math.random() > 0.5) {
+              // Simulate someone liking a question
+              randomQuestion.likes += Math.random() > 0.5 ? 1 : -1;
+              randomQuestion.likes = Math.max(0, randomQuestion.likes);
+            } else {
+              // Simulate someone answering
+              const aiAnswers = [
+                "Great question! Here's what I think...",
+                "I had the same doubt. Here's how I solved it:",
+                "Based on my experience, try this approach:",
+                "This is a common problem. The solution is:",
+                "I found this resource helpful:",
+              ];
+
+              if (randomQuestion.answers.length < 3) {
+                const newAnswer = {
+                  id: Date.now(),
+                  text: aiAnswers[Math.floor(Math.random() * aiAnswers.length)],
+                  author: `Student${Math.floor(Math.random() * 100)}`,
+                  authorId: `sim${Math.floor(Math.random() * 1000)}`,
+                  timestamp: new Date().toLocaleString(),
+                };
+                randomQuestion.answers.push(newAnswer);
+              }
+            }
+
+            localStorage.setItem(
+              "qa_questions",
+              JSON.stringify(this.questions)
+            );
+            this.renderQuestions();
+          }
+        }
+      }
+
+      // Utility Functions
+      function createFloatingElements() {
+        const container = document.getElementById("floatingElements");
+        for (let i = 0; i < 15; i++) {
+          const element = document.createElement("div");
+          element.className = "floating-element";
+          element.style.width = Math.random() * 40 + 20 + "px";
+          element.style.height = element.style.width;
+          element.style.left = Math.random() * 100 + "%";
+          element.style.top = Math.random() * 100 + "%";
+          element.style.animationDelay = Math.random() * 8 + "s";
+          element.style.animationDuration = Math.random() * 6 + 6 + "s";
+          container.appendChild(element);
+        }
+      }
+
+      function showNotification(message, type = "info") {
+        const notification = document.createElement("div");
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 16px 24px;
+          background: ${
+            type === "success"
+              ? "#48bb78"
+              : type === "error"
+              ? "#f56565"
+              : "#667eea"
+          };
+          color: white;
+          border-radius: 12px;
+          z-index: 1000;
+          font-weight: 600;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+          transform: translateX(400px);
+          transition: transform 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        `;
+
+        const icon =
+          type === "success"
+            ? "check-circle"
+            : type === "error"
+            ? "exclamation-circle"
+            : "info-circle";
+        notification.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.style.transform = "translateX(0)";
+        }, 100);
+
+        setTimeout(() => {
+          notification.style.transform = "translateX(400px)";
+          setTimeout(() => {
+            if (document.body.contains(notification)) {
+              document.body.removeChild(notification);
+            }
+          }, 300);
+        }, 3000);
+      }
+
+      // Global instances
+      let userAuth;
+      let questionManager;
+
+      // Initialize the application
+      function init() {
+        createFloatingElements();
+
+        // Initialize authentication system
+        userAuth = new UserAuth();
+
+        // Initialize question management
+        questionManager = new QuestionManager(userAuth);
+
+        showNotification("Q&A Board loaded successfully!", "success");
+      }
+
+      // Auto-save drafts
+      document.addEventListener("DOMContentLoaded", () => {
+        const questionInput = document.getElementById("questionInput");
+
+        // Auto-save drafts
+        questionInput.addEventListener("input", () => {
+          localStorage.setItem("qa_draft", questionInput.value);
+        });
+
+        // Restore draft on load
+        const draft = localStorage.getItem("qa_draft");
+        if (draft) {
+          questionInput.value = draft;
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener("keydown", (e) => {
+          if (e.ctrlKey && e.key === "Enter") {
+            const postBtn = document.getElementById("postQuestionBtn");
+            if (!postBtn.disabled && userAuth && userAuth.isAuthenticated()) {
+              e.preventDefault();
+              questionManager.postQuestion();
+            }
+          }
+        });
+
+        // Clean up on page unload
+        window.addEventListener("beforeunload", () => {
+          const questionInput = document.getElementById("questionInput");
+          if (questionInput && questionInput.value.trim()) {
+            localStorage.setItem("qa_draft", questionInput.value);
+          }
+        });
+
+        // Initialize everything
+        init();
+      });
+    </script>
+  </body>
+</html>

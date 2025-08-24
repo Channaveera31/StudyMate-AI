@@ -1,0 +1,83 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.qa-header {
+  background: #4f46e5;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+.back-btn {
+  color: white;
+  text-decoration: none;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.qa-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 15px;
+}
+
+.ask-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ask-section textarea {
+  flex: 1;
+  padding: 10px;
+}
+
+.ask-section button {
+  padding: 10px 15px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.question-card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.answers {
+  margin-top: 10px;
+  padding-left: 15px;
+  border-left: 2px solid #ddd;
+}
+
+.answer-input {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.answer-input input {
+  flex: 1;
+  padding: 5px;
+}
+
+.auth-section {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+#userInfo {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #fff;
+}
