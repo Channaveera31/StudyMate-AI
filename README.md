@@ -46,8 +46,3 @@ This build fixes `scanner.html` navigation, adds a global profile dropdown, a re
 - `server/index.js`, `package.json`, `.env.sample`
 - `config.json` (and `config.sample.json`)
 - `README.md`
-
-# StudyMate-AI
-# StudyMate-AI
-# StudyMate-AI
-# StudyMate-AI
